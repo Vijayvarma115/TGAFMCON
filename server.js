@@ -1,0 +1,240 @@
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import bodyParser from 'body-parser';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
+import multer from 'multer';
+import jwt from 'jsonwebtoken';
+import { v2 as cloudinary } from 'cloudinary';
+
+// Load environment variables from .env file
+dotenv.config();
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const ADMIN_CODE = process.env.ADMIN_CODE || 'TGAFM-ADMIN-2026';
+const JWT_SECRET = process.env.JWT_SECRET || 'replace-this-jwt-secret-in-production';
+const JOURNAL_DIR = path.join(__dirname, 'public', 'journals');
+
+if (!fs.existsSync(JOURNAL_DIR)) {
+  fs.mkdirSync(JOURNAL_DIR, { recursive: true });
+}
+
+const normalizeFileName = (name = '') =>
+  name
+    .replace(/\.[^/.]+$/, '')
+    .replace(/[^a-zA-Z0-9\s-_]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .slice(0, 120)
+    .toLowerCase();
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 20 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    const isPdf = file.mimetype === 'application/pdf' || path.extname(file.originalname).toLowerCase() === '.pdf';
+    if (!isPdf) return cb(new Error('Only PDF uploads are allowed'));
+    cb(null, true);
+  }
+});
+
+// --- MIDDLEWARE ---
+// CORS allows your React frontend (on port 5173) to talk to this server (on port 5001)
+app.use(cors()); 
+app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'public')));
+
+const requireAdmin = (req, res, next) => {
+  const authHeader = req.headers.authorization || '';
+  const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+
+  if (!token) return res.status(401).json({ error: 'Missing admin token' });
+
+  try {
+    const payload = jwt.verify(token, JWT_SECRET);
+    if (!payload?.isAdmin) return res.status(403).json({ error: 'Invalid admin token' });
+    req.admin = payload;
+    next();
+  } catch (_err) {
+    res.status(401).json({ error: 'Invalid or expired admin token' });
+  }
+};
+
+// --- MONGODB CONNECTION ---
+// Using the connection string provided in your .env configuration
+const mongoURI = process.env.MONGO_URI || "mongodb+srv://chatbpt_user:Devi503@cluster0.vfhtz.mongodb.net/tafm?retryWrites=true&w=majority";
+
+mongoose.connect(mongoURI)
+  .then(() => {
+    console.log("✅ SUCCESS: Connected to TAFM MongoDB Atlas");
+  })
+  .catch(err => {
+    console.error("❌ MongoDB Connection Error:", err.message);
+  });
+
+// --- ARTICLE SCHEMA ---
+// This schema maps exactly to the data displayed in your App.jsx
+const ArticleSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  authors: { type: String, required: true },
+  affiliations: { type: String, required: true },
+  abstract: { type: String, required: true },
+  keywords: { type: [String], default: [] },
+  doi: { type: String, default: "" },
+  publishedDate: { type: String, default: () => new Date().toLocaleDateString('en-GB') },
+  articleType: { type: String, default: "Original Research" },
+  pdfUrl: { type: String, default: "#" },
+  license: { type: String, default: "CC-BY 4.0" }
+});
+
+const Article = mongoose.model('Article', ArticleSchema);
+
+// --- API ROUTES ---
+
+/**
+ * @route   POST /api/admin/login
+ * @desc    Validate admin code and return a short-lived token
+ */
+app.post('/api/admin/login', (req, res) => {
+  const { code } = req.body || {};
+
+  if (!code || code !== ADMIN_CODE) {
+    return res.status(401).json({ error: 'Invalid secretariat code' });
+  }
+
+  const token = jwt.sign({ isAdmin: true }, JWT_SECRET, { expiresIn: '12h' });
+  res.json({ token });
+});
+
+/**
+ * @route   GET /api/articles
+ * @desc    Get all research articles for the Journal Archive
+ */
+app.get('/api/articles', async (req, res) => {
+  try {
+    const articles = await Article.find().sort({ _id: -1 }); // Newest first
+    res.json(articles);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch articles from database" });
+  }
+});
+
+/**
+ * @route   POST /api/articles
+ * @desc    Create a new article (Used by the Admin/Secretariat panel)
+ */
+app.post('/api/articles', requireAdmin, async (req, res) => {
+  try {
+    const newArticle = new Article(req.body);
+    const savedArticle = await newArticle.save();
+    res.status(201).json(savedArticle);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+/**
+ * @route   POST /api/admin/upload-journal
+ * @desc    Upload PDF + create journal entry (Admin only)
+ */
+app.post('/api/admin/upload-journal', requireAdmin, upload.single('journalPdf'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: 'PDF file is required' });
+
+    const {
+      title,
+      authors,
+      affiliations,
+      abstract,
+      keywords,
+      doi,
+      publishedDate,
+      articleType,
+      license
+    } = req.body;
+
+    if (!title || !authors || !affiliations || !abstract) {
+      return res.status(400).json({ error: 'title, authors, affiliations and abstract are required' });
+    }
+
+    const keywordArray = Array.isArray(keywords)
+      ? keywords
+      : String(keywords || '')
+          .split(',')
+          .map((k) => k.trim())
+          .filter(Boolean);
+
+    // Upload buffer to Cloudinary
+    const uploadToCloudinary = (buffer) => {
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { resource_type: 'raw', folder: 'tgafm_journals', format: 'pdf' },
+          (error, result) => {
+            if (result) resolve(result);
+            else reject(error);
+          }
+        );
+        stream.end(buffer);
+      });
+    };
+
+    const cloudinaryResult = await uploadToCloudinary(req.file.buffer);
+
+    const newArticle = new Article({
+      title: title.trim(),
+      authors: authors.trim(),
+      affiliations: affiliations.trim(),
+      abstract: abstract.trim(),
+      keywords: keywordArray,
+      doi: (doi || '').trim(),
+      publishedDate: (publishedDate || '').trim() || new Date().toLocaleDateString('en-GB'),
+      articleType: (articleType || '').trim() || 'Original Research',
+      pdfUrl: cloudinaryResult.secure_url,
+      license: (license || '').trim() || 'CC-BY 4.0'
+    });
+
+    const savedArticle = await newArticle.save();
+    res.status(201).json(savedArticle);
+  } catch (err) {
+    res.status(400).json({ error: err.message || 'Upload failed' });
+  }
+});
+
+/**
+ * @route   DELETE /api/articles/:id
+ * @desc    Remove an article by its ID
+ */
+app.delete('/api/articles/:id', requireAdmin, async (req, res) => {
+  try {
+    const deleted = await Article.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ error: "Article not found" });
+    res.json({ message: "Article successfully removed from archive" });
+  } catch (err) {
+    res.status(500).json({ error: "Delete operation failed" });
+  }
+});
+
+// Root route to check if server is alive
+app.get('/', (req, res) => {
+  res.send("TAFM API is live and serving forensic research on Port 5001");
+});
+
+// --- SERVER START ---
+const PORT = process.env.PORT || 5001;
+
+app.listen(PORT, () => {
+  console.log(`🚀 TAFM Backend is running on http://localhost:${PORT}`);
+  console.log(`📡 Use http://localhost:${PORT}/api/articles to view raw JSON data`);
+});
