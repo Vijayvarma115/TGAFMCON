@@ -26,6 +26,12 @@ const __dirname = path.dirname(__filename);
 const ADMIN_CODE = process.env.ADMIN_CODE || 'TGAFM-ADMIN-2026';
 const JWT_SECRET = process.env.JWT_SECRET || 'replace-this-jwt-secret-in-production';
 const JOURNAL_DIR = path.join(__dirname, 'public', 'journals');
+const DIST_DIR = path.join(__dirname, 'dist');
+const hasCloudinaryConfig = Boolean(
+  process.env.CLOUDINARY_CLOUD_NAME &&
+  process.env.CLOUDINARY_API_KEY &&
+  process.env.CLOUDINARY_API_SECRET
+);
 
 if (!fs.existsSync(JOURNAL_DIR)) {
   fs.mkdirSync(JOURNAL_DIR, { recursive: true });
@@ -49,6 +55,26 @@ const upload = multer({
     cb(null, true);
   }
 });
+
+const uploadPdfToCloudinary = (fileBuffer, baseName) =>
+  new Promise((resolve, reject) => {
+    const publicId = `${normalizeFileName(baseName)}-${Date.now()}`;
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        resource_type: 'raw',
+        folder: 'tgafm/journals',
+        public_id: publicId,
+        format: 'pdf',
+        overwrite: true
+      },
+      (err, result) => {
+        if (err) return reject(err);
+        resolve(result);
+      }
+    );
+
+    uploadStream.end(fileBuffer);
+  });
 
 // --- MIDDLEWARE ---
 // CORS allows your React frontend (on port 5173) to talk to this server (on port 5001)
@@ -176,21 +202,20 @@ app.post('/api/admin/upload-journal', requireAdmin, upload.single('journalPdf'),
           .map((k) => k.trim())
           .filter(Boolean);
 
-    // Upload buffer to Cloudinary
-    const uploadToCloudinary = (buffer) => {
-      return new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          { resource_type: 'raw', folder: 'tgafm_journals', format: 'pdf' },
-          (error, result) => {
-            if (result) resolve(result);
-            else reject(error);
-          }
-        );
-        stream.end(buffer);
-      });
-    };
+    let pdfUrl = '';
 
-    const cloudinaryResult = await uploadToCloudinary(req.file.buffer);
+    if (hasCloudinaryConfig) {
+      const uploadResult = await uploadPdfToCloudinary(req.file.buffer, title || req.file.originalname);
+      pdfUrl = uploadResult?.secure_url || uploadResult?.url || '';
+    }
+
+    if (!pdfUrl) {
+      const safeFileBase = normalizeFileName(title || req.file.originalname) || 'journal';
+      const fileName = `${safeFileBase}-${Date.now()}.pdf`;
+      const destinationPath = path.join(JOURNAL_DIR, fileName);
+      await fs.promises.writeFile(destinationPath, req.file.buffer);
+      pdfUrl = `/journals/${encodeURIComponent(fileName)}`;
+    }
 
     const newArticle = new Article({
       title: title.trim(),
@@ -201,7 +226,7 @@ app.post('/api/admin/upload-journal', requireAdmin, upload.single('journalPdf'),
       doi: (doi || '').trim(),
       publishedDate: (publishedDate || '').trim() || new Date().toLocaleDateString('en-GB'),
       articleType: (articleType || '').trim() || 'Original Research',
-      pdfUrl: cloudinaryResult.secure_url,
+      pdfUrl,
       license: (license || '').trim() || 'CC-BY 4.0'
     });
 
@@ -226,10 +251,18 @@ app.delete('/api/articles/:id', requireAdmin, async (req, res) => {
   }
 });
 
-// Root route to check if server is alive
-app.get('/', (req, res) => {
-  res.send("TAFM API is live and serving forensic research on Port 5001");
+app.get('/api/health', (_req, res) => {
+  res.json({ ok: true, service: 'tafm-api' });
 });
+
+if (fs.existsSync(DIST_DIR)) {
+  app.use(express.static(DIST_DIR));
+
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api/')) return next();
+    res.sendFile(path.join(DIST_DIR, 'index.html'));
+  });
+}
 
 // --- SERVER START ---
 const PORT = process.env.PORT || 5001;

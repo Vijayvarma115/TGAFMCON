@@ -24,7 +24,7 @@ import {
 
 // Backend Server Port: 5001
 
-const API_BASE_URL = 'http://localhost:5001/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 const ADMIN_TOKEN_KEY = 'tgafmAdminToken';
 
 
@@ -107,7 +107,7 @@ const PAST_BODIES = [
 
   {
 
-    term: "2014 to Dec, 2023",
+    term: "Dec, 2014 to Dec, 2023",
 
     president: "Dr. T. Krupal Singh",
 
@@ -161,9 +161,7 @@ const OBJECTIVES = [
 
 const CME_ACTIVITIES = [
 
-  { year: "2026", title: "TGAFMCON-2026: Holistic Forensics", host: "TBD", place: "TBD", date: "11th & 12th April" },
-
-  { year: "2025", title: "TGAFMCON-2025: Standard Medicolegal Practices", host: "Kakatiya Medical College", place: "Warangal", date: "11th & 12th July" },
+  { year: "2026", title: "TGAFMCON-2026: Standard Medicolegal Practices (Upcoming - Not Yet Completed)", host: "Kakatiya Medical College", place: "Warangal", date: "11th & 12th July" },
 
   { year: "2024", title: "Insights into the Criminal Intent", host: "KAMSRC", place: "Hyderabad", date: "27th January" },
 
@@ -447,9 +445,9 @@ const App = () => {
 
       <div className="max-w-7xl mx-auto px-4 flex justify-between h-20 items-center">
 
-        <div className="flex items-center gap-3 cursor-pointer" onClick={() => setActiveTab('home')}>
+        <div className="flex items-center gap-4 cursor-pointer" onClick={() => setActiveTab('home')}>
 
-          <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center border p-1 shadow-sm overflow-hidden">
+          <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center border p-1 shadow-sm overflow-hidden">
 
             <img src="/logo.png" alt="TGAFM" className="w-full h-full object-contain" onError={(e) => { e.target.src = 'https://via.placeholder.com/100?text=Logo'; }} />
 
@@ -457,9 +455,9 @@ const App = () => {
 
           <div>
 
-            <h1 className="text-blue-900 font-black text-lg leading-none uppercase tracking-tighter">TGAFM</h1>
+            <h1 className="text-blue-900 font-black text-2xl leading-none uppercase tracking-tighter">TGAFM</h1>
 
-            <p className="text-[8px] uppercase font-black text-red-600 tracking-widest leading-none mt-1">Telangana Academy of Forensic Medicine</p>
+            <p className="text-xs font-black text-red-600 tracking-wider leading-tight mt-1">Telangana Academy of <br className="lg:hidden" /> Forensic Medicine</p>
 
           </div>
 
@@ -468,167 +466,115 @@ const App = () => {
         
 
         <div className="hidden lg:flex space-x-1 items-center">
+          <button onClick={() => setActiveTab('home')} className="px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all hover:text-blue-900 text-slate-600 bg-transparent border-none shadow-none">Home</button>
 
-          <button onClick={() => setActiveTab('home')} className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'home' ? 'text-red-600 bg-red-50' : 'text-slate-600 hover:text-blue-900'}`}>Home</button>
-
-          <button onClick={openJournalArchive} className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'journal' || activeTab === 'journal-article' ? 'text-red-600 bg-red-50' : 'text-slate-600 hover:text-blue-900'}`}>Journal</button>
-
-
-
-          {/* INSTRUCTIONS DROPDOWN */}
-
-          <div className="relative" ref={instructionsDropdownRef}>
-
-            <button onClick={() => setIsInstructionsOpen(!isInstructionsOpen)} className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center gap-1 transition-all ${activeTab.includes('instr-') ? 'text-red-600 bg-red-50' : 'text-slate-600 hover:text-blue-900'}`}>
-
-              Instructions <ChevronDown size={14} className={`transition-transform ${isInstructionsOpen ? 'rotate-180' : ''}`} />
-
+          <div className="group relative z-40">
+            <button className="px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all hover:text-blue-900 text-slate-600 flex items-center gap-1 bg-transparent border-none shadow-none">
+              About us <ChevronDown size={14} className="group-hover:rotate-180 transition-transform"/>
             </button>
-
-            {isInstructionsOpen && (
-
-              <div className="absolute top-full left-0 mt-2 w-64 bg-white border border-slate-100 rounded-2xl shadow-2xl py-3 animate-in fade-in slide-in-from-top-2 overflow-hidden z-50">
-
-                {[
-
-                  { id: 'instr-authors', label: 'FOR AUTHORS', icon: PenTool },
-
-                  { id: 'instr-reviewers', label: 'FOR REVIEWERS', icon: Eye },
-
-                  { id: 'instr-editors', label: 'FOR EDITORS', icon: Settings },
-
-                ].map((item) => (
-
-                  <button key={item.id} onClick={() => { setActiveTab(item.id); setIsInstructionsOpen(false); }} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-red-50 hover:text-red-600 flex items-center gap-3 transition-colors">
-
-                    <item.icon size={14} /> {item.label}
-
-                  </button>
-
-                ))}
-
+            <div className="absolute top-full left-0 w-56 bg-white border border-slate-100 rounded-2xl shadow-xl py-3 hidden group-hover:block transition-opacity opacity-100">
+              <button onClick={() => setActiveTab('academy-about')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">About TGAFM</button>
+              <button onClick={() => setActiveTab('academy-present')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">Present Executive Body</button>
+              <div className="group/past relative w-full">
+                <button className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 flex items-center justify-between border-none shadow-none bg-transparent">
+                  Past Executive Body <ChevronRight size={14} />
+                </button>
+                <div className="absolute top-0 left-full w-48 bg-white border border-slate-100 rounded-2xl shadow-xl py-3 hidden group-hover/past:block">
+                  <button onClick={() => setActiveTab('academy-past-1')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">2014 - 2024</button>
+                  <button onClick={() => setActiveTab('academy-past-2')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">2024 - 2026</button>
+                </div>
               </div>
-
-            )}
-
+            </div>
           </div>
 
-          
-
-          {/* POLICIES DROPDOWN */}
-
-          <div className="relative" ref={policiesDropdownRef}>
-
-            <button onClick={() => setIsPoliciesOpen(!isPoliciesOpen)} className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center gap-1 transition-all ${activeTab.includes('policy-') || activeTab.includes('aims-') || activeTab.includes('editorial-') || activeTab.includes('publisher-') ? 'text-red-600 bg-red-50' : 'text-slate-600 hover:text-blue-900'}`}>
-
-              Policies <ChevronDown size={14} className={`transition-transform ${isPoliciesOpen ? 'rotate-180' : ''}`} />
-
+          <div className="group relative z-40">
+            <button className="px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all hover:text-blue-900 text-slate-600 flex items-center gap-1 bg-transparent border-none shadow-none">
+              Journal <ChevronDown size={14} className="group-hover:rotate-180 transition-transform"/>
             </button>
-
-            {isPoliciesOpen && (
-
-              <div className="absolute top-full left-0 mt-2 w-80 bg-white border border-slate-100 rounded-2xl shadow-2xl py-3 animate-in fade-in slide-in-from-top-2 overflow-hidden z-50">
-
-                {[
-
-                  { id: 'aims-scope', label: 'Aims & Scope', icon: Target },
-
-                  { id: 'editorial-board', label: 'Editorial Board', icon: Users },
-
-                  { id: 'policy-open-access', label: 'Open Access Policy', icon: Unlock },
-
-                  { id: 'policy-copyright', label: 'Copyright Policy', icon: ShieldCheck },
-
-                  { id: 'policy-licensing', label: 'Licensing Terms', icon: FileText },
-
-                  { id: 'policy-editorial-process',  label: 'Editorial Process & Peer Review', icon: ScrollText },
-
-                  { id: 'policy-publication-ethics', label: 'Publication Ethics', icon: ShieldAlert },
-
-                  { id: 'policy-author-charges', label: 'Author Charges', icon: Database },
-
-                  { id: 'publisher-info', label: 'Publisher Information', icon: Building2 },
-
-                ].map((item) => (
-
-                  <button key={item.id} onClick={() => { setActiveTab(item.id); setIsPoliciesOpen(false); }} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-red-50 hover:text-red-600 flex items-center gap-3 transition-colors">
-
-                    <item.icon size={14} /> {item.label}
-
-                  </button>
-
-                ))}
-
+            <div className="absolute top-full left-0 w-64 bg-white border border-slate-100 rounded-2xl shadow-xl py-3 hidden group-hover:block transition-opacity opacity-100">
+              <button onClick={() => setActiveTab('aims-scope')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">Aims & Scope</button>
+              <button onClick={() => setActiveTab('editorial-board')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">Editorial Board</button>
+              <button onClick={() => setActiveTab('policy-editorial-process')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">Editorial Process & Peer Review</button>
+              <div className="group/instr relative w-full">
+                <button className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 flex items-center justify-between border-none shadow-none bg-transparent">
+                  Instructions <ChevronRight size={14} />
+                </button>
+                <div className="absolute top-0 left-full w-48 bg-white border border-slate-100 rounded-2xl shadow-xl py-3 hidden group-hover/instr:block">
+                  <button onClick={() => setActiveTab('instr-editors')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">Editors</button>
+                  <button onClick={() => setActiveTab('instr-reviewers')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">Reviewers</button>
+                  <button onClick={() => setActiveTab('instr-authors')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">Authors</button>
+                </div>
               </div>
-
-            )}
-
+              <div className="group/pub relative w-full">
+                <button className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 flex items-center justify-between border-none shadow-none bg-transparent">
+                  Publications <ChevronRight size={14} />
+                </button>
+                <div className="absolute top-0 left-full w-48 bg-white border border-slate-100 rounded-2xl shadow-xl py-3 hidden group-hover/pub:block">
+                  <button onClick={() => setActiveTab('journal')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">2025</button>
+                  <button onClick={() => setActiveTab('journal')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">2026</button>
+                </div>
+              </div>
+              <div className="group/pol relative w-full">
+                <button className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 flex items-center justify-between border-none shadow-none bg-transparent">
+                  Policies <ChevronRight size={14} />
+                </button>
+                <div className="absolute top-0 left-full w-64 bg-white border border-slate-100 rounded-2xl shadow-xl py-3 hidden group-hover/pol:block">
+                  <button onClick={() => setActiveTab('policy-open-access')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">Open Access</button>
+                  <div className="group/copy relative w-full">
+                    <button onClick={() => setActiveTab('policy-copyright')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 flex items-center justify-between border-none shadow-none bg-transparent">
+                      Copyright Policy <ChevronRight size={14} />
+                    </button>
+                    <div className="absolute top-0 left-full w-56 bg-white border border-slate-100 rounded-2xl shadow-xl py-3 hidden group-hover/copy:block">
+                      <button onClick={() => setActiveTab('policy-publication-ethics')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">Publication Ethics</button>
+                    </div>
+                  </div>
+                  <button onClick={() => setActiveTab('policy-author-charges')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">Publication Charges</button>
+                  <button onClick={() => setActiveTab('publisher-info')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">Publisher Information</button>
+                </div>
+              </div>
+            </div>
           </div>
 
-          
-
-          <div className="relative" ref={academyDropdownRef}>
-
-            <button onClick={() => setIsAcademyOpen(!isAcademyOpen)} className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center gap-1 transition-all ${activeTab.includes('academy') || activeTab === 'academic-activities' ? 'text-red-600 bg-red-50' : 'text-slate-600 hover:text-blue-900'}`}>
-
-              Academy <ChevronDown size={14} className={`transition-transform ${isAcademyOpen ? 'rotate-180' : ''}`} />
-
+          <div className="group relative z-40">
+            <button className="px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all hover:text-blue-900 text-slate-600 flex items-center gap-1 bg-transparent border-none shadow-none">
+              Members <ChevronDown size={14} className="group-hover:rotate-180 transition-transform"/>
             </button>
-
-            {isAcademyOpen && (
-
-              <div className="absolute top-full left-0 mt-2 w-80 bg-white border border-slate-100 rounded-2xl shadow-2xl py-3 animate-in fade-in slide-in-from-top-2 overflow-hidden z-50">
-
-                {[
-
-                  { id: 'academy-about', label: 'About TGAFM', icon: Landmark },
-
-                  { id: 'academy-present', label: 'Present Executive Body', icon: Users },
-
-                  { id: 'academy-past', label: 'Past Executive Bodies', icon: History },
-
-                  { id: 'academy-members', label: 'Registered Life Members', icon: UserCheck },
-
-                  { id: 'academic-activities', label: 'Academic Activities', icon: Microscope },
-
-                  { id: 'academy-notices', label: 'Announcements & Notices', icon: Bell },
-
-                  { id: 'academy-registration', label: 'Registration / Membership Form', icon: FileText },
-
-                ].map((item) => (
-
-                  <button key={item.id} onClick={() => { setActiveTab(item.id); setIsAcademyOpen(false); }} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-red-50 hover:text-red-600 flex items-center gap-3 transition-colors">
-
-                    <item.icon size={14} /> {item.label}
-
-                  </button>
-
-                ))}
-
-              </div>
-
-            )}
-
+            <div className="absolute top-full left-0 w-56 bg-white border border-slate-100 rounded-2xl shadow-xl py-3 hidden group-hover:block transition-opacity opacity-100">
+              <button onClick={() => setActiveTab('academy-members')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">List of Members</button>
+              <button onClick={() => setActiveTab('academy-registration')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">Form</button>
+            </div>
           </div>
 
+          <div className="group relative z-40">
+            <button className="px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all hover:text-blue-900 text-slate-600 flex items-center gap-1 bg-transparent border-none shadow-none">
+              Conferences <ChevronDown size={14} className="group-hover:rotate-180 transition-transform"/>
+            </button>
+            <div className="absolute top-full left-0 w-56 bg-white border border-slate-100 rounded-2xl shadow-xl py-3 hidden group-hover:block transition-opacity opacity-100">
+              <div className="group/conf25 relative w-full">
+                <button className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 flex items-center justify-between border-none shadow-none bg-transparent">
+                  2025 <ChevronRight size={14} />
+                </button>
+                <div className="absolute top-0 left-full w-48 bg-white border border-slate-100 rounded-2xl shadow-xl py-3 hidden group-hover/conf25:block">
+                  <button onClick={() => setActiveTab('conference')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">About</button>
+                  <button onClick={() => setActiveTab('conference')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">Glimpses</button>
+                </div>
+              </div>
+              <button onClick={() => setActiveTab('conference')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">2026</button>
+              <button onClick={() => setActiveTab('conference')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">Upcoming</button>
+            </div>
+          </div>
 
+          <button onClick={() => setActiveTab('academic-activities')} className="px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all hover:text-blue-900 text-slate-600 bg-transparent border-none shadow-none">Pg Corner / Academic Activities</button>
 
-          <button onClick={() => setActiveTab('conference')} className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'conference' ? 'text-red-600 bg-red-50' : 'text-slate-600 hover:text-blue-900'}`}>Conference</button>
+          <button onClick={() => setActiveTab('academy-notices')} className="px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all hover:text-blue-900 text-slate-600 bg-transparent border-none shadow-none">Announcements</button>
 
-          
+          <button onClick={() => setActiveTab('sitemap')} className="px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all hover:text-blue-900 text-slate-600 bg-transparent border-none shadow-none">Site Map</button>
 
           <div className="h-6 w-[1px] bg-slate-200 mx-3"></div>
-
           <button onClick={() => setActiveTab('admin')} className="ml-4 bg-blue-900 text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-red-600 transition flex items-center gap-2 shadow-lg">
-
             <Plus size={14}/> Admin
-
           </button>
-
         </div>
-
-        
-
         <button className="lg:hidden p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}> {isMenuOpen ? <X /> : <Menu />} </button>
 
       </div>
@@ -653,17 +599,34 @@ const App = () => {
 
         {activeTab === 'home' && (
 
-          <div className="py-20 text-center animate-in fade-in duration-1000">
+          <div className="py-12 md:py-20 text-center animate-in fade-in duration-1000 flex flex-col items-center">  
 
-            <h2 className="text-7xl font-black text-blue-900 mb-6 uppercase tracking-tighter leading-none">Forensic <br/> Excellence</h2>
+            {/* Official Logo */}
+            <div className="w-40 h-40 md:w-56 md:h-56 mb-8 flex items-center justify-center">
+              <img src="/logo.png" alt="TGAFM Logo" className="w-full h-full object-contain drop-shadow-xl" onError={(e) => { e.target.src = 'https://via.placeholder.com/200?text=Logo'; }} />
+            </div>
 
-            <p className="text-slate-400 font-medium mb-10 max-w-xl mx-auto italic">Official digital secretariat and scholarly repository of the Telangana Academy of Forensic Medicine.</p>
+            {/* Main Organization Title */}
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-blue-900 mb-4 uppercase tracking-tighter leading-tight max-w-4xl">
+              Telangana Academy of <br className="hidden md:block" /> Forensic Medicine
+            </h2>
 
-            <div className="flex justify-center gap-5">
+            {/* Subtitle / Abbreviation */}
+            <h3 className="text-2xl md:text-3xl font-bold text-red-600 tracking-[0.2em] uppercase mb-8">
+              TGAFM
+            </h3>
 
-              <button onClick={openJournalArchive} className="bg-red-600 text-white px-10 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl hover:bg-red-700 transition">Browse Journal</button>
+            {/* Description */}
+            <p className="text-slate-600 font-medium mb-12 max-w-2xl mx-auto text-lg leading-relaxed">
+              The official digital secretariat, scholarly repository, and professional body representing forensic medicine experts across Telangana.
+            </p>
 
-              <button onClick={() => setActiveTab('academy-registration')} className="bg-white border-2 px-10 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 transition">Join TGAFM</button>
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row justify-center gap-5 w-full sm:w-auto px-4">
+
+              <button onClick={openJournalArchive} className="bg-red-600 text-white px-10 py-4 w-full sm:w-auto rounded-2xl font-black uppercase text-[10px] sm:text-xs tracking-widest shadow-xl hover:bg-red-700 transition">Browse Journal</button>
+
+              <button onClick={() => setActiveTab('academy-registration')} className="bg-white border-2 border-slate-200 text-slate-800 px-10 py-4 w-full sm:w-auto rounded-2xl font-black uppercase text-[10px] sm:text-xs tracking-widest hover:bg-slate-50 transition shadow-sm">Join TGAFM</button>
 
             </div>
 
@@ -1315,15 +1278,15 @@ const App = () => {
 
         {/* ACADEMY - PAST BODIES */}
 
-        {activeTab === 'academy-past' && (
-
+        {(activeTab === 'academy-past' || activeTab === 'academy-past-1' || activeTab === 'academy-past-2') && (
           <div className="max-w-5xl mx-auto py-10 animate-in fade-in">
-
              <h2 className="text-4xl font-black text-blue-900 tracking-tighter uppercase text-center mb-16">Past Executive Bodies</h2>
-
              <div className="space-y-12">
-
-                {PAST_BODIES.map((body, idx) => (
+                {PAST_BODIES.filter((_, idx) =>
+                   activeTab === 'academy-past' || 
+                   (activeTab === 'academy-past-1' && idx === 1) || 
+                   (activeTab === 'academy-past-2' && idx === 0)
+                ).map((body, idx) => (
 
                   <div key={idx} className="bg-white rounded-[3rem] border shadow-sm overflow-hidden"><div className="bg-blue-900 p-8 text-white flex justify-between items-center"><div><p className="text-[10px] font-black uppercase tracking-widest opacity-60">Term</p><h4 className="text-2xl font-black">{body.term}</h4></div><div className="text-right"><p className="text-[10px] font-black uppercase tracking-widest opacity-60">President</p><p className="text-xl font-bold">{body.president}</p></div></div><div className="p-10 grid md:grid-cols-3 gap-8"><div className="space-y-2"><p className="text-[10px] font-black text-red-600 uppercase border-b pb-2">Sub-Council</p>{body.details.vicePresidents?.map((n, i) => <p key={i} className="text-[10px] font-bold text-slate-500">{n} (VP)</p>)}{body.details.jointSecretaries?.map((n, i) => <p key={i} className="text-[10px] font-bold text-slate-500">{n} (JS)</p>)}</div><div className="col-span-2 space-y-2"><p className="text-[10px] font-black text-red-600 uppercase border-b pb-2">Executive Members</p><p className="text-[10px] font-medium text-slate-400 leading-relaxed italic">{body.details.members.join(", ")}</p></div></div></div>
 
@@ -1428,8 +1391,41 @@ const App = () => {
                      <button type="button" onClick={() => openArticleDetails(art)} className="text-left w-full">
                        <h4 className="text-2xl font-bold text-slate-900 mb-3 group-hover:text-blue-900 transition leading-snug">{art.title}</h4>
                      </button>
-                     <p className="text-sm text-slate-400 font-medium mb-2">{art.authors}</p>
-                     <p className="text-[11px] text-slate-500 mb-8">Published: {art.publishedDate || 'Not specified'}</p>
+                     <p className="text-sm text-slate-400 font-medium mb-2">{Array.isArray(art.authors) ? art.authors.join(', ') : art.authors}</p>
+                     {art.affiliations && (
+                       <div className="text-xs text-slate-400 mb-2 italic">
+                         {Array.isArray(art.affiliations) 
+                           ? art.affiliations.map((aff, i) => <p key={i}>{aff}</p>)
+                           : <p>{art.affiliations}</p>
+                         }
+                       </div>
+                     )}
+                     <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-slate-500 mb-4">
+                       <p>Published: {art.publishedDate ? new Date(art.publishedDate).toLocaleDateString() : 'Not specified'}</p>
+                       {art.doi && (
+                         <p>
+                           DOI: <a href={art.doi} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{art.doi}</a>
+                         </p>
+                       )}
+                     </div>
+                     {art.abstract && (
+                       <div className="mb-6">
+                         <p className="text-xs font-semibold text-slate-700 mb-1">Abstract:</p>
+                         <p className="text-xs text-slate-600 line-clamp-3 hover:line-clamp-none transition-all">{art.abstract}</p>
+                       </div>
+                     )}
+                     {art.keywords && (
+                       <div className="flex gap-2 flex-wrap mb-8">
+                         {Array.isArray(art.keywords)
+                           ? art.keywords.map((kw, i) => (
+                               <span key={i} className="px-2 py-0.5 bg-slate-100 text-slate-600 text-[10px] rounded-full border border-slate-200">
+                                 {kw}
+                               </span>
+                             ))
+                           : <span className="px-2 py-0.5 bg-slate-100 text-slate-600 text-[10px] rounded-full border border-slate-200">{art.keywords}</span>
+                         }
+                       </div>
+                     )}
 
                      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 text-[10px] font-black text-blue-900 uppercase tracking-[0.2em] border-t pt-8 mt-4">
                        <span className="text-slate-300">ISSN (Print): 3107-7633</span>
@@ -2881,6 +2877,111 @@ const App = () => {
 
           </div>
 
+        )}
+
+        {/* SITE MAP */}
+        {activeTab === 'sitemap' && (
+          <div className="max-w-5xl mx-auto py-10 animate-in fade-in space-y-12">
+            <div className="text-center mb-16">
+              <span className="text-red-600 font-black text-[10px] uppercase tracking-[0.4em] mb-4 block">Navigation</span>
+              <h2 className="text-5xl font-black text-blue-900 tracking-tighter uppercase leading-none">Site Map</h2>
+            </div>
+            
+            <div className="bg-white p-12 rounded-[3rem] border shadow-sm grid md:grid-cols-2 gap-10">
+              {/* Column 1 */}
+              <div className="space-y-8">
+                <div>
+                  <button onClick={() => setActiveTab('home')} className="text-2xl font-black text-blue-900 uppercase hover:text-red-600 transition block text-left">Home</button>
+                </div>
+                
+                <div>
+                  <h3 className="text-2xl font-black text-blue-900 uppercase mb-4 border-b-2 border-red-600 inline-block pb-1">About Us</h3>
+                  <ul className="space-y-3 font-medium text-slate-600 ml-4 border-l-2 border-slate-100 pl-4">
+                    <li><button onClick={() => setActiveTab('academy-about')} className="hover:text-red-600 transition block text-left">About TGAFM</button></li>
+                    <li><button onClick={() => setActiveTab('academy-present')} className="hover:text-red-600 transition block text-left">Present Executive Body</button></li>
+                    <li>
+                      <span className="block text-slate-800 font-bold mb-2">Past Executive Body</span>
+                      <ul className="space-y-2 ml-4">
+                        <li><button onClick={() => setActiveTab('academy-past-1')} className="text-sm hover:text-red-600 transition block text-left">- 2014 - 2024</button></li>
+                        <li><button onClick={() => setActiveTab('academy-past-2')} className="text-sm hover:text-red-600 transition block text-left">- 2024 - 2026</button></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="text-2xl font-black text-blue-900 uppercase mb-4 border-b-2 border-red-600 inline-block pb-1">Members</h3>
+                  <ul className="space-y-3 font-medium text-slate-600 ml-4 border-l-2 border-slate-100 pl-4">
+                    <li><button onClick={() => setActiveTab('academy-members')} className="hover:text-red-600 transition block text-left">List of Members</button></li>
+                    <li><button onClick={() => setActiveTab('academy-registration')} className="hover:text-red-600 transition block text-left">Registration Form</button></li>
+                  </ul>
+                </div>
+                
+                <div>
+                  <h3 className="text-2xl font-black text-blue-900 uppercase mb-4 border-b-2 border-red-600 inline-block pb-1">Conferences</h3>
+                  <ul className="space-y-3 font-medium text-slate-600 ml-4 border-l-2 border-slate-100 pl-4">
+                    <li>
+                      <span className="block text-slate-800 font-bold mb-2">2025</span>
+                      <ul className="space-y-2 ml-4">
+                        <li><button onClick={() => setActiveTab('conference')} className="text-sm hover:text-red-600 transition block text-left">- About</button></li>
+                        <li><button onClick={() => setActiveTab('conference')} className="text-sm hover:text-red-600 transition block text-left">- Glimpses</button></li>
+                      </ul>
+                    </li>
+                    <li><button onClick={() => setActiveTab('conference')} className="hover:text-red-600 transition block text-left">2026</button></li>
+                    <li><button onClick={() => setActiveTab('conference')} className="hover:text-red-600 transition block text-left">Upcoming</button></li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Column 2 */}
+              <div className="space-y-8">
+                <div>
+                  <h3 className="text-2xl font-black text-blue-900 uppercase mb-4 border-b-2 border-red-600 inline-block pb-1">Journal</h3>
+                  <ul className="space-y-3 font-medium text-slate-600 ml-4 border-l-2 border-slate-100 pl-4">
+                    <li><button onClick={() => setActiveTab('aims-scope')} className="hover:text-red-600 transition block text-left">Aims & Scope</button></li>
+                    <li><button onClick={() => setActiveTab('editorial-board')} className="hover:text-red-600 transition block text-left">Editorial Board</button></li>
+                    <li><button onClick={() => setActiveTab('policy-editorial-process')} className="hover:text-red-600 transition block text-left">Editorial Process & Peer Review</button></li>
+                    
+                    <li>
+                      <span className="block text-slate-800 font-bold mb-2">Instructions</span>
+                      <ul className="space-y-2 ml-4">
+                        <li><button onClick={() => setActiveTab('instr-editors')} className="text-sm hover:text-red-600 transition block text-left">- Editors</button></li>
+                        <li><button onClick={() => setActiveTab('instr-reviewers')} className="text-sm hover:text-red-600 transition block text-left">- Reviewers</button></li>
+                        <li><button onClick={() => setActiveTab('instr-authors')} className="text-sm hover:text-red-600 transition block text-left">- Authors</button></li>
+                      </ul>
+                    </li>
+                    
+                    <li>
+                      <span className="block text-slate-800 font-bold mb-2">Publications</span>
+                      <ul className="space-y-2 ml-4">
+                        <li><button onClick={() => setActiveTab('journal')} className="text-sm hover:text-red-600 transition block text-left">- 2025</button></li>
+                        <li><button onClick={() => setActiveTab('journal')} className="text-sm hover:text-red-600 transition block text-left">- 2026</button></li>
+                      </ul>
+                    </li>
+
+                    <li>
+                      <span className="block text-slate-800 font-bold mb-2">Policies</span>
+                      <ul className="space-y-2 ml-4">
+                        <li><button onClick={() => setActiveTab('policy-open-access')} className="text-sm hover:text-red-600 transition block text-left">- Open Access</button></li>
+                        <li><button onClick={() => setActiveTab('policy-copyright')} className="text-sm hover:text-red-600 transition block text-left">- Copyright Policy</button></li>
+                        <li><button onClick={() => setActiveTab('policy-publication-ethics')} className="text-sm hover:text-red-600 transition block text-left">- Publication Ethics</button></li>
+                        <li><button onClick={() => setActiveTab('policy-author-charges')} className="text-sm hover:text-red-600 transition block text-left">- Publication Charges</button></li>
+                        <li><button onClick={() => setActiveTab('publisher-info')} className="text-sm hover:text-red-600 transition block text-left">- Publisher Information</button></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div>
+                  <button onClick={() => setActiveTab('academic-activities')} className="text-2xl font-black text-blue-900 uppercase hover:text-red-600 transition block text-left">Pg Corner / Academic Activities</button>
+                </div>
+                
+                <div>
+                  <button onClick={() => setActiveTab('academy-notices')} className="text-2xl font-black text-blue-900 uppercase hover:text-red-600 transition block text-left">Announcements</button>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
 
       </main>
