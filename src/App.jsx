@@ -4,7 +4,7 @@ import {
 
   BookOpen, ShieldCheck, Search, Menu, X, ArrowRight, 
 
-  Download, Award, Database, Mail, MapPin, Plus, Trash2, 
+  Download, Award, Database, Mail, MapPin, Trash2, 
 
   Lock, CheckCircle, Info, FileText, Loader2, Wifi, WifiOff,
 
@@ -151,7 +151,7 @@ const OBJECTIVES = [
 
   { icon: ShieldCheck, title: "Ethical Standards", desc: "Highest standards of professional ethics and integrity." },
 
-  { icon: HeartPulse, title: "Risk Allowance Advocacy", desc: "Fair allowances for professionals engaged in autopsy work." },
+  { icon: HeartPulse, title: "Welfare of Forensic Medicine Professionals", desc: "Ensure safe mortuaries, vaccination, mental health support, adequate PPE, and recognition as high-risk healthcare workers." },
 
   { icon: HardHat, title: "Qualified Mortuary Assistants", desc: "Promote trained roles to improve autopsy dignity and hygiene." }
 
@@ -437,35 +437,58 @@ const App = () => {
 
   const selectedArticle = articles.find((art) => String(art._id) === String(selectedArticleId));
 
+  const JOURNAL_TABS = new Set([
+    'journal',
+    'journal-article',
+    'aims-scope',
+    'editorial-board',
+    'policy-editorial-process',
+    'policy-open-access',
+    'policy-copyright',
+    'policy-publication-ethics',
+    'policy-licensing',
+    'policy-author-charges',
+    'publisher-info',
+    'instr-editors',
+    'instr-reviewers',
+    'instr-authors'
+  ]);
+
+  const isJournalContext = JOURNAL_TABS.has(activeTab);
+  const brandAcronym = isJournalContext ? 'AJFM' : 'TGAFM';
+  const brandTitle = isJournalContext
+    ? 'Academy Journal of Forensic Medicine'
+    : 'Telangana Academy of Forensic Medicine';
+  const brandSubline = isJournalContext
+    ? 'ISSN (Print): 3107-7633'
+    : 'Reg No. 451 of 2014 | Andhra Pradesh Societies Registration Act, 2001';
+
 
 
   const Navbar = () => (
 
-    <nav className="bg-white border-b sticky top-0 z-50 shadow-sm font-sans text-slate-900">
+    <nav className="bg-white sticky top-0 z-50 shadow-sm font-sans text-slate-900 border-b border-slate-200">
 
-      <div className="max-w-7xl mx-auto px-4 flex justify-between h-20 items-center">
+      <div className="bg-gradient-to-r from-blue-950 via-blue-900 to-red-800 text-white">
+        <div className="max-w-7xl mx-auto px-4 py-3 cursor-pointer" onClick={() => setActiveTab('home')}>
+          <div className="max-w-5xl mx-auto w-full rounded-2xl border border-white/20 bg-white/5 shadow-xl px-5 md:px-10 py-4 md:py-5 flex items-center justify-center gap-5 md:gap-8">
+            <div className="w-16 h-16 md:w-24 md:h-24 bg-white rounded-xl flex items-center justify-center border border-white/30 p-1.5 shadow-sm overflow-hidden shrink-0">
+              <img src="/logo.png" alt="TGAFM" className="w-full h-full object-contain" onError={(e) => { e.target.src = 'https://via.placeholder.com/100?text=Logo'; }} />
+            </div>
 
-        <div className="flex items-center gap-4 cursor-pointer" onClick={() => setActiveTab('home')}>
-
-          <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center border p-1 shadow-sm overflow-hidden">
-
-            <img src="/logo.png" alt="TGAFM" className="w-full h-full object-contain" onError={(e) => { e.target.src = 'https://via.placeholder.com/100?text=Logo'; }} />
-
+            <div className="text-left space-y-1">
+              <p className="text-[10px] md:text-xs uppercase tracking-[0.35em] text-blue-100 font-semibold">Official Website Of</p>
+              <h1 className="text-4xl md:text-6xl font-black uppercase tracking-[0.06em] text-white leading-none">{brandAcronym}</h1>
+              <p className="text-[11px] md:text-sm font-bold uppercase tracking-[0.12em] text-red-100">{brandTitle}</p>
+              <p className="text-[10px] md:text-xs text-blue-100/90 font-semibold tracking-wide">{brandSubline}</p>
+            </div>
           </div>
-
-          <div>
-
-            <h1 className="text-blue-900 font-black text-2xl leading-none uppercase tracking-tighter">TGAFM</h1>
-
-            <p className="text-xs font-black text-red-600 tracking-wider leading-tight mt-1">Telangana Academy of <br className="lg:hidden" /> Forensic Medicine</p>
-
-          </div>
-
         </div>
+      </div>
 
-        
-
-        <div className="hidden lg:flex space-x-1 items-center">
+      <div className="bg-white">
+        <div className="max-w-7xl mx-auto px-4 flex justify-between h-16 items-center">
+          <div className="hidden lg:flex space-x-1 items-center">
           <button onClick={() => setActiveTab('home')} className="px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all hover:text-blue-900 text-slate-600 bg-transparent border-none shadow-none">Home</button>
 
           <div className="group relative z-40">
@@ -569,14 +592,22 @@ const App = () => {
           <button onClick={() => setActiveTab('academy-notices')} className="px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all hover:text-blue-900 text-slate-600 bg-transparent border-none shadow-none">Announcements</button>
 
           <button onClick={() => setActiveTab('sitemap')} className="px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all hover:text-blue-900 text-slate-600 bg-transparent border-none shadow-none">Site Map</button>
+          </div>
 
-          <div className="h-6 w-[1px] bg-slate-200 mx-3"></div>
-          <button onClick={() => setActiveTab('admin')} className="ml-4 bg-blue-900 text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-red-600 transition flex items-center gap-2 shadow-lg">
-            <Plus size={14}/> Admin
-          </button>
+          <button className="lg:hidden p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}> {isMenuOpen ? <X /> : <Menu />} </button>
         </div>
-        <button className="lg:hidden p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}> {isMenuOpen ? <X /> : <Menu />} </button>
+      </div>
 
+      <div className="bg-amber-50 border-t border-b border-amber-200 text-amber-900 text-xs font-black uppercase tracking-wider py-2">
+        <marquee
+          behavior="scroll"
+          direction="left"
+          scrollAmount="10"
+          onMouseEnter={(e) => e.currentTarget.stop()}
+          onMouseLeave={(e) => e.currentTarget.start()}
+        >
+          Upcoming Conference: TGAFMCON - 2026 | 11th and 12th April, 2026 | 2nd Annual State Conference | Organized by Department of Forensic Medicine and Toxicology, Gandhi Medical College, Secunderabad | Venue: Swami Vivekananda Auditorium, Gandhi Medical College
+        </marquee>
       </div>
 
     </nav>
@@ -602,8 +633,8 @@ const App = () => {
           <div className="py-12 md:py-20 text-center animate-in fade-in duration-1000 flex flex-col items-center">  
 
             {/* Official Logo */}
-            <div className="w-40 h-40 md:w-56 md:h-56 mb-8 flex items-center justify-center">
-              <img src="/logo.png" alt="TGAFM Logo" className="w-full h-full object-contain drop-shadow-xl" onError={(e) => { e.target.src = 'https://via.placeholder.com/200?text=Logo'; }} />
+            <div className="w-44 h-44 md:w-60 md:h-60 mb-10 flex items-center justify-center bg-white rounded-[2.5rem] border border-slate-100 shadow-xl p-3">
+              <img src="/logo.png" alt="TGAFM Logo" className="w-full h-full object-contain" onError={(e) => { e.target.src = 'https://via.placeholder.com/200?text=Logo'; }} />
             </div>
 
             {/* Main Organization Title */}
@@ -1308,7 +1339,7 @@ const App = () => {
 
              <div className="flex flex-col md:flex-row items-center gap-10 mb-20">
 
-                <div className="md:w-2/3"><span className="text-red-600 font-black text-[10px] uppercase tracking-[0.4em] mb-4 block">Institutional Profile</span><h2 className="text-4xl font-black text-blue-900 tracking-tighter uppercase mb-6 leading-tight">About TGAFM</h2><p className="text-slate-600 leading-relaxed font-medium mb-8 text-justify">The Telangana Academy of Forensic Medicine (TGAFM) is a professional organization dedicated to the advancement of Forensic Medicine. Officially registered on **5th June 2014** under the Andhra Pradesh Societies Registration Act, 2001. Today, 217 members have become life members, serving as a platform for excellence.</p></div>
+                <div className="md:w-2/3"><span className="text-red-600 font-black text-[10px] uppercase tracking-[0.4em] mb-4 block">Institutional Profile</span><h2 className="text-4xl font-black text-blue-900 tracking-tighter uppercase mb-6 leading-tight">About TGAFM</h2><p className="text-slate-600 leading-relaxed font-medium mb-8 text-justify">The Telangana Academy of Forensic Medicine (TGAFM) is a professional organization dedicated to the advancement of Forensic Medicine. Officially registered on <strong>5th June 2014</strong> under the Andhra Pradesh Societies Registration Act, 2001. Today, 217 members have become life members, serving as a platform for excellence.</p></div>
 
                 <div className="md:w-1/3 p-8 bg-white rounded-[4rem] border shadow-2xl flex items-center justify-center"><img src="/logo.png" alt="TGAFM" className="w-full h-full object-contain" /></div>
 
@@ -2994,9 +3025,13 @@ const App = () => {
 
           <div className="space-y-6">
 
-            <h4 className="font-black text-2xl text-white tracking-tighter uppercase leading-none">TGAFM</h4>
+            <h4 className="font-black text-2xl text-white tracking-tighter uppercase leading-none">{brandAcronym}</h4>
 
-            <p className="text-[10px] font-bold uppercase tracking-widest leading-relaxed mt-2">Advancing Forensic Medicine and Toxicology in Telangana Through Integrity, Scientific Rigor, and Scholarly Standards Since 2014.</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest leading-relaxed mt-2">
+              {isJournalContext
+                ? 'Academy Journal of Forensic Medicine | Peer-reviewed publication for forensic medicine, legal medicine, and allied research.'
+                : 'Advancing Forensic Medicine and Toxicology in Telangana Through Integrity, Scientific Rigor, and Scholarly Standards Since 2014.'}
+            </p>
 
             <div className="mt-6 bg-white/5 p-4 rounded-2xl border border-white/10">
 
