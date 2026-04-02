@@ -518,7 +518,7 @@ const App = () => {
   const isJournalContext = JOURNAL_TABS.has(activeTab);
   const brandAcronym = 'TGAFM';
   const brandTitle = isJournalContext
-    ? 'Telangana Academy of Forensic Medicine'
+    ? 'Academy Journal of Forensic Medicine'
     : 'Telangana Academy of Forensic Medicine';
   const brandSubline = isJournalContext
     ? 'ISSN(Print):3107-7633'
@@ -539,11 +539,18 @@ const App = () => {
 
             <div className="text-left space-y-1">
               <p className="text-[10px] md:text-xs uppercase tracking-[0.35em] text-blue-100 font-semibold">
-                {isJournalContext ? 'Official Publication Of' : 'Official Website Of'}
+                {isJournalContext ? 'Official Publication Of TGAFM' : 'Official Website Of'}
               </p>
-              <h1 className="text-4xl md:text-6xl font-black uppercase tracking-[0.06em] text-white leading-none">{brandAcronym}</h1>
+              <h1 className="text-4xl md:text-6xl font-black uppercase tracking-[0.06em] text-white leading-none">
+                {isJournalContext ? 'AJFM' : brandAcronym}
+              </h1>
               <p className="text-[11px] md:text-sm font-bold uppercase tracking-[0.12em] text-red-100">{brandTitle}</p>
-              <p className="text-[10px] md:text-xs text-blue-100/90 font-semibold tracking-wide">{brandSubline}</p>
+              {isJournalContext && (
+                <p className="text-[10px] md:text-xs text-blue-100/90 font-semibold tracking-wide">{brandSubline}</p>
+              )}
+              {!isJournalContext && (
+                <p className="text-[10px] md:text-xs text-blue-100/90 font-semibold tracking-wide">{brandSubline}</p>
+              )}
             </div>
           </div>
         </div>
