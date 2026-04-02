@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 import { 
 
-  BookOpen, ShieldCheck, Search, Menu, X, ArrowRight, 
+  BookOpen, ShieldCheck, Search, Menu, X, 
 
   Download, Award, Database, Mail, MapPin, Trash2, 
 
@@ -207,6 +207,7 @@ const App = () => {
 
   const [journalFile, setJournalFile] = useState(null);
   const [selectedArticleId, setSelectedArticleId] = useState('');
+  const [selectedJournalIssue, setSelectedJournalIssue] = useState('issue-1');
 
   const [journalForm, setJournalForm] = useState({
     title: '',
@@ -417,6 +418,7 @@ const App = () => {
   const openJournalArchive = () => {
     setActiveTab('journal');
     setSelectedArticleId('');
+    setSelectedJournalIssue('issue-1');
 
     const url = new URL(window.location.href);
     url.searchParams.delete('article');
@@ -436,6 +438,65 @@ const App = () => {
   };
 
   const selectedArticle = articles.find((art) => String(art._id) === String(selectedArticleId));
+  const normalizeJournalTitle = (value = '') => value.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  const ISSUE_ONE_LAYOUT = [
+    {
+      key: 'Lead Exposure in Childhood',
+      category: 'Editorial',
+      title: 'Lead Exposure in Childhood: A Review of Risks, Consequences, and Interventions',
+      authors: 'Prashanth Mada and Radhika Soanker',
+      page: '02'
+    },
+    {
+      key: 'Awareness of Registered Medical Practitioners on Certification of Sexual Potency',
+      category: 'Original Article',
+      title: 'Awareness of registered medical practitioners on certification of sexual potency - a questionnaire-based study',
+      authors: 'Surendar Reddy G',
+      page: '05'
+    },
+    {
+      key: 'An Unusual Manner of Death in a Case of Electrocution',
+      category: 'Case Reports',
+      title: 'An unusual manner of death in a case of electrocution: an autopsy case report',
+      authors: 'Suraj Sundaragiri, Rudra Vijay, Chaitanya Mittal',
+      page: '10'
+    },
+    {
+      key: 'Unknown Dead Neonate',
+      category: 'Case Reports',
+      title: 'Unknown Dead Neonate - Maternal Neonaticide? A Case Report',
+      authors: 'Mary Sowjanya G, Surender Reddy',
+      page: '13'
+    },
+    {
+      key: 'Complex Suicide',
+      category: 'Case Reports',
+      title: 'Complex-suicide - A case report.',
+      authors: 'Varun Kumar R and Taqiuddin Khan M',
+      page: '17'
+    }
+  ];
+
+  const findIssueOneArticle = (matchKey) => {
+    const normalizedKey = normalizeJournalTitle(matchKey);
+    return articles.find((article) => {
+      const normalizedArticleTitle = normalizeJournalTitle(article.title || '');
+      return (
+        normalizedArticleTitle.includes(normalizedKey) ||
+        normalizedKey.includes(normalizedArticleTitle)
+      );
+    });
+  };
+
+  const issueOneArticles = ISSUE_ONE_LAYOUT.map((layout) => {
+    const matchedArticle = findIssueOneArticle(layout.key);
+    return matchedArticle ? { ...matchedArticle, issueLayout: layout } : null;
+  }).filter(Boolean);
+
+  const issueOneIds = new Set(issueOneArticles.map((article) => String(article._id)));
+  const issueTwoArticles = articles.filter((article) => !issueOneIds.has(String(article._id)));
+  const displayedIssueArticles = selectedJournalIssue === 'issue-1' ? issueOneArticles : issueTwoArticles;
 
   const JOURNAL_TABS = new Set([
     'journal',
@@ -455,12 +516,12 @@ const App = () => {
   ]);
 
   const isJournalContext = JOURNAL_TABS.has(activeTab);
-  const brandAcronym = isJournalContext ? 'AJFM' : 'TGAFM';
+  const brandAcronym = 'TGAFM';
   const brandTitle = isJournalContext
-    ? 'Academy Journal of Forensic Medicine'
+    ? 'Telangana Academy of Forensic Medicine'
     : 'Telangana Academy of Forensic Medicine';
   const brandSubline = isJournalContext
-    ? 'ISSN (Print): 3107-7633'
+    ? 'ISSN(Print):3107-7633'
     : 'Reg No. 451 of 2014 | Andhra Pradesh Societies Registration Act, 2001';
 
 
@@ -477,7 +538,9 @@ const App = () => {
             </div>
 
             <div className="text-left space-y-1">
-              <p className="text-[10px] md:text-xs uppercase tracking-[0.35em] text-blue-100 font-semibold">Official Website Of</p>
+              <p className="text-[10px] md:text-xs uppercase tracking-[0.35em] text-blue-100 font-semibold">
+                {isJournalContext ? 'Official Publication Of' : 'Official Website Of'}
+              </p>
               <h1 className="text-4xl md:text-6xl font-black uppercase tracking-[0.06em] text-white leading-none">{brandAcronym}</h1>
               <p className="text-[11px] md:text-sm font-bold uppercase tracking-[0.12em] text-red-100">{brandTitle}</p>
               <p className="text-[10px] md:text-xs text-blue-100/90 font-semibold tracking-wide">{brandSubline}</p>
@@ -573,15 +636,6 @@ const App = () => {
               Conferences <ChevronDown size={14} className="group-hover:rotate-180 transition-transform"/>
             </button>
             <div className="absolute top-full left-0 w-56 bg-white border border-slate-100 rounded-2xl shadow-xl py-3 hidden group-hover:block transition-opacity opacity-100">
-              <div className="group/conf25 relative w-full">
-                <button className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 flex items-center justify-between border-none shadow-none bg-transparent">
-                  2025 <ChevronRight size={14} />
-                </button>
-                <div className="absolute top-0 left-full w-48 bg-white border border-slate-100 rounded-2xl shadow-xl py-3 hidden group-hover/conf25:block">
-                  <button onClick={() => setActiveTab('conference')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">About</button>
-                  <button onClick={() => setActiveTab('conference')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">Glimpses</button>
-                </div>
-              </div>
               <button onClick={() => setActiveTab('conference')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">2026</button>
               <button onClick={() => setActiveTab('conference')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">Upcoming</button>
             </div>
@@ -1409,21 +1463,50 @@ const App = () => {
 
           <div className="grid lg:grid-cols-4 gap-12 animate-in slide-in-from-bottom-5">
 
-             <aside className="lg:col-span-1 space-y-6"><div className="bg-white p-8 rounded-[2.5rem] border shadow-sm"><h3 className="font-black text-[10px] uppercase text-slate-400 mb-6 tracking-widest">Journal Archive</h3><ul className="space-y-4 text-xs font-black uppercase tracking-widest"><li className="text-red-600 border-l-4 border-red-600 pl-3">Volume 1 (2025)</li><li className="text-slate-200 pl-4 cursor-not-allowed">Volume 2 (2026)</li></ul></div></aside>
+             <aside className="lg:col-span-1 space-y-6">
+               <div className="bg-white p-8 rounded-[2.5rem] border shadow-sm">
+                 <h3 className="font-black text-[10px] uppercase text-slate-400 mb-6 tracking-widest">Journal Archive</h3>
+
+                 <div className="mb-5">
+                   <p className="text-[10px] font-black uppercase tracking-widest text-red-600 mb-3">Volume 1 (2025)</p>
+                   <div className="space-y-2 text-[11px] font-black uppercase tracking-widest">
+                     <button
+                       type="button"
+                       onClick={() => setSelectedJournalIssue('issue-1')}
+                       className={`w-full text-left pl-3 py-1 border-l-4 transition ${selectedJournalIssue === 'issue-1' ? 'text-red-600 border-red-600' : 'text-slate-400 border-transparent hover:text-slate-600'}`}
+                     >
+                       Issue 1 June
+                     </button>
+                     <button
+                       type="button"
+                       onClick={() => setSelectedJournalIssue('issue-2')}
+                       className={`w-full text-left pl-3 py-1 border-l-4 transition ${selectedJournalIssue === 'issue-2' ? 'text-red-600 border-red-600' : 'text-slate-400 border-transparent hover:text-slate-600'}`}
+                     >
+                       Issue 2 Dec
+                     </button>
+                   </div>
+                 </div>
+
+                 <p className="text-slate-300 text-[11px] font-black uppercase tracking-widest">Volume 2 (2026)</p>
+               </div>
+             </aside>
 
              <div className="lg:col-span-3 space-y-6">
-               {articles.map((art) => {
+               {displayedIssueArticles.map((art) => {
                  const pdfLink = resolvePdfUrl(art.pdfUrl);
                  const canOpenPdf = Boolean(pdfLink);
+                 const displayCategory = art.issueLayout?.category || art.articleType;
+                 const displayTitle = art.issueLayout?.title || art.title;
+                 const displayAuthors = art.issueLayout?.authors || (Array.isArray(art.authors) ? art.authors.join(', ') : art.authors);
 
                  return (
                    <div key={art._id} className="bg-white p-10 rounded-[2.5rem] border border-slate-50 hover:shadow-2xl transition group">
-                     <span className="text-[9px] font-black text-red-600 uppercase tracking-[0.2em] mb-3 block">{art.articleType}</span>
+                     <span className="text-[9px] font-black text-red-600 uppercase tracking-[0.2em] block mb-3">{displayCategory}</span>
                      <button type="button" onClick={() => openArticleDetails(art)} className="text-left w-full">
-                       <h4 className="text-2xl font-bold text-slate-900 mb-3 group-hover:text-blue-900 transition leading-snug">{art.title}</h4>
+                       <h4 className="text-2xl font-bold text-slate-900 mb-3 group-hover:text-blue-900 transition leading-snug">{displayTitle}</h4>
                      </button>
-                     <p className="text-sm text-slate-400 font-medium mb-2">{Array.isArray(art.authors) ? art.authors.join(', ') : art.authors}</p>
-                     {art.affiliations && (
+                     <p className="text-sm text-slate-400 font-medium mb-2">{displayAuthors}</p>
+                     {art.affiliations && String(art.affiliations).trim().toLowerCase() !== 'tgafm' && (
                        <div className="text-xs text-slate-400 mb-2 italic">
                          {Array.isArray(art.affiliations) 
                            ? art.affiliations.map((aff, i) => <p key={i}>{aff}</p>)
@@ -1431,45 +1514,23 @@ const App = () => {
                          }
                        </div>
                      )}
-                     <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-slate-500 mb-4">
-                       <p>Published: {art.publishedDate ? new Date(art.publishedDate).toLocaleDateString() : 'Not specified'}</p>
-                       {art.doi && (
+                     {art.doi && (
+                       <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-slate-500 mb-4">
                          <p>
                            DOI: <a href={art.doi} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{art.doi}</a>
                          </p>
-                       )}
-                     </div>
-                     {art.abstract && (
+                       </div>
+                     )}
+                     {art.abstract && String(art.abstract).trim().toLowerCase() !== 'full abstract to be updated from manuscript.' && (
                        <div className="mb-6">
                          <p className="text-xs font-semibold text-slate-700 mb-1">Abstract:</p>
                          <p className="text-xs text-slate-600 line-clamp-3 hover:line-clamp-none transition-all">{art.abstract}</p>
                        </div>
                      )}
-                     {art.keywords && (
-                       <div className="flex gap-2 flex-wrap mb-8">
-                         {Array.isArray(art.keywords)
-                           ? art.keywords.map((kw, i) => (
-                               <span key={i} className="px-2 py-0.5 bg-slate-100 text-slate-600 text-[10px] rounded-full border border-slate-200">
-                                 {kw}
-                               </span>
-                             ))
-                           : <span className="px-2 py-0.5 bg-slate-100 text-slate-600 text-[10px] rounded-full border border-slate-200">{art.keywords}</span>
-                         }
-                       </div>
-                     )}
-
                      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 text-[10px] font-black text-blue-900 uppercase tracking-[0.2em] border-t pt-8 mt-4">
                        <span className="text-slate-300">ISSN (Print): 3107-7633</span>
 
                        <div className="flex flex-wrap items-center gap-3">
-                         <button
-                           type="button"
-                           onClick={() => openArticleDetails(art)}
-                           className="flex items-center gap-2 border-b-2 border-red-600 pb-1 hover:text-red-600 transition"
-                         >
-                           Article Details <ArrowRight size={16} />
-                         </button>
-
                          {canOpenPdf ? (
                            <>
                              <a
@@ -1497,6 +1558,12 @@ const App = () => {
                    </div>
                  );
                })}
+
+               {displayedIssueArticles.length === 0 && (
+                 <div className="bg-white p-10 rounded-[2.5rem] border border-slate-100 text-center">
+                   <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">No articles in this issue yet.</p>
+                 </div>
+               )}
              </div>
 
           </div>
@@ -2951,13 +3018,6 @@ const App = () => {
                 <div>
                   <h3 className="text-2xl font-black text-blue-900 uppercase mb-4 border-b-2 border-red-600 inline-block pb-1">Conferences</h3>
                   <ul className="space-y-3 font-medium text-slate-600 ml-4 border-l-2 border-slate-100 pl-4">
-                    <li>
-                      <span className="block text-slate-800 font-bold mb-2">2025</span>
-                      <ul className="space-y-2 ml-4">
-                        <li><button onClick={() => setActiveTab('conference')} className="text-sm hover:text-red-600 transition block text-left">- About</button></li>
-                        <li><button onClick={() => setActiveTab('conference')} className="text-sm hover:text-red-600 transition block text-left">- Glimpses</button></li>
-                      </ul>
-                    </li>
                     <li><button onClick={() => setActiveTab('conference')} className="hover:text-red-600 transition block text-left">2026</button></li>
                     <li><button onClick={() => setActiveTab('conference')} className="hover:text-red-600 transition block text-left">Upcoming</button></li>
                   </ul>
