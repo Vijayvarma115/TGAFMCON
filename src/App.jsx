@@ -512,6 +512,25 @@ const App = () => {
     });
   };
 
+  const isPlaceholderAuthorText = (value = '') =>
+    String(value).trim().toLowerCase() === 'details to be updated';
+
+  const getArticleDisplayAuthors = (article) => {
+    if (!article) return '';
+
+    const issueOneLayout = ISSUE_ONE_LAYOUT.find((layout) => {
+      const normalizedLayoutTitle = normalizeJournalTitle(layout.title || '');
+      const normalizedArticleTitle = normalizeJournalTitle(article.title || '');
+      return (
+        normalizedLayoutTitle === normalizedArticleTitle ||
+        normalizedArticleTitle.includes(normalizedLayoutTitle) ||
+        normalizedLayoutTitle.includes(normalizedArticleTitle)
+      );
+    });
+
+    return issueOneLayout?.authors || (Array.isArray(article.authors) ? article.authors.join(', ') : article.authors || '');
+  };
+
   const issueOneArticles = ISSUE_ONE_LAYOUT.map((layout) => {
     const matchedArticle = findIssueOneArticle(layout.key);
     return matchedArticle ? { ...matchedArticle, issueLayout: layout } : null;
@@ -1510,9 +1529,10 @@ const App = () => {
                {displayedIssueArticles.map((art) => {
                  const pdfLink = resolvePdfUrl(art.pdfUrl);
                  const canOpenPdf = Boolean(pdfLink);
-                 const displayCategory = art.issueLayout?.category || art.articleType;
+                 const displayCategory = art.issueLayout?.category || 'Others';
                  const displayTitle = art.issueLayout?.title || art.title;
-                 const displayAuthors = art.issueLayout?.authors || (Array.isArray(art.authors) ? art.authors.join(', ') : art.authors);
+                 const displayAuthors = getArticleDisplayAuthors(art);
+                 const shouldShowAuthors = displayAuthors && !isPlaceholderAuthorText(displayAuthors);
 
                  return (
                    <div key={art._id} className="bg-white p-10 rounded-[2.5rem] border border-slate-50 hover:shadow-2xl transition group">
@@ -1520,7 +1540,7 @@ const App = () => {
                      <button type="button" onClick={() => openArticleDetails(art)} className="text-left w-full">
                        <h4 className="text-2xl font-bold text-slate-900 mb-3 group-hover:text-blue-900 transition leading-snug">{displayTitle}</h4>
                      </button>
-                     <p className="text-sm text-slate-400 font-medium mb-2">{displayAuthors}</p>
+                     {shouldShowAuthors && <p className="text-sm text-slate-400 font-medium mb-2">{displayAuthors}</p>}
                      {art.affiliations && String(art.affiliations).trim().toLowerCase() !== 'tgafm' && (
                        <div className="text-xs text-slate-400 mb-2 italic">
                          {Array.isArray(art.affiliations) 
@@ -1546,6 +1566,14 @@ const App = () => {
                        <span className="text-slate-300">ISSN (Print): 3107-7633</span>
 
                        <div className="flex flex-wrap items-center gap-3">
+                          <button
+                            type="button"
+                            onClick={() => openArticleDetails(art)}
+                            className="flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-xl tracking-widest hover:bg-slate-700 transition"
+                          >
+                            View Details
+                          </button>
+
                          {canOpenPdf ? (
                            <>
                              <a
@@ -1609,79 +1637,15 @@ const App = () => {
 
                   <h2 className="text-4xl font-black text-blue-900 tracking-tight leading-tight mb-4">{selectedArticle.title}</h2>
 
-                  <p className="text-slate-600 font-bold mb-2">{selectedArticle.authors}</p>
-
-                  <p className="text-sm text-slate-500">{selectedArticle.affiliations}</p>
+                  {(() => {
+                    const displayAuthors = getArticleDisplayAuthors(selectedArticle);
+                    const shouldShowAuthors = displayAuthors && !isPlaceholderAuthorText(displayAuthors);
+                    return shouldShowAuthors ? (
+                      <p className="text-base text-slate-500 font-semibold">{displayAuthors}</p>
+                    ) : null;
+                  })()}
 
                 </header>
-
-                <section>
-
-                  <h3 className="text-xl font-black text-blue-900 uppercase mb-4">Abstract</h3>
-
-                  <p className="text-slate-700 leading-relaxed whitespace-pre-line">{selectedArticle.abstract || 'Not available.'}</p>
-
-                </section>
-
-                <section className="grid md:grid-cols-2 gap-6">
-
-                  <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">DOI</p>
-
-                    <p className="font-semibold text-slate-700 break-all">{selectedArticle.doi || 'Not assigned'}</p>
-
-                  </div>
-
-                  <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Published Date</p>
-
-                    <p className="font-semibold text-slate-700">{selectedArticle.publishedDate || 'Not specified'}</p>
-
-                  </div>
-
-                  <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 md:col-span-2">
-
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-3">Keywords</p>
-
-                    <div className="flex flex-wrap gap-2">
-
-                      {(selectedArticle.keywords || []).length > 0 ? (
-
-                        selectedArticle.keywords.map((kw, idx) => (
-
-                          <span key={`${kw}-${idx}`} className="px-3 py-1 rounded-full bg-blue-50 text-blue-800 text-xs font-bold uppercase tracking-wider">{kw}</span>
-
-                        ))
-
-                      ) : (
-
-                        <span className="text-slate-500 font-semibold">Not specified</span>
-
-                      )}
-
-                    </div>
-
-                  </div>
-
-                  <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">License</p>
-
-                    <p className="font-semibold text-slate-700">{selectedArticle.license || 'CC BY 4.0'}</p>
-
-                  </div>
-
-                  <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">ISSN (Print)</p>
-
-                    <p className="font-semibold text-slate-700">3107-7633</p>
-
-                  </div>
-
-                </section>
 
                 <section className="flex flex-wrap gap-3 pt-2">
 
