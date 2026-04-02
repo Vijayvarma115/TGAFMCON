@@ -34,6 +34,21 @@ const hasCloudinaryConfig = Boolean(
   process.env.CLOUDINARY_API_SECRET
 );
 
+const JOURNAL_SITEMAP_TABS = [
+  'journal',
+  'aims-scope',
+  'editorial-board',
+  'policy-editorial-process',
+  'instr-editors',
+  'instr-reviewers',
+  'instr-authors',
+  'policy-open-access',
+  'policy-copyright',
+  'policy-publication-ethics',
+  'policy-author-charges',
+  'publisher-info'
+];
+
 if (!fs.existsSync(JOURNAL_DIR)) {
   fs.mkdirSync(JOURNAL_DIR, { recursive: true });
 }
@@ -140,7 +155,7 @@ const escapeXml = (value = '') =>
 
 /**
  * @route   GET /sitemap.xml
- * @desc    Dynamic sitemap for homepage + article detail URLs
+ * @desc    Dynamic sitemap for homepage + journal tabs + article detail URLs
  */
 app.get('/sitemap.xml', async (_req, res) => {
   try {
@@ -155,13 +170,19 @@ app.get('/sitemap.xml', async (_req, res) => {
       }
     ];
 
+    const journalSectionEntries = JOURNAL_SITEMAP_TABS.map((tab) => ({
+      loc: `${PUBLIC_SITE_URL}/?tab=${encodeURIComponent(tab)}`,
+      changefreq: 'weekly',
+      priority: tab === 'journal' ? '0.9' : '0.7'
+    }));
+
     const articleEntries = articles.map((article) => ({
-      loc: `${PUBLIC_SITE_URL}/?article=${encodeURIComponent(String(article._id))}`,
+      loc: `${PUBLIC_SITE_URL}/?tab=journal-article&article=${encodeURIComponent(String(article._id))}`,
       changefreq: 'weekly',
       priority: '0.8'
     }));
 
-    const urls = [...baseEntries, ...articleEntries]
+    const urls = [...baseEntries, ...journalSectionEntries, ...articleEntries]
       .map(
         (entry) => `  <url>\n    <loc>${escapeXml(entry.loc)}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${entry.changefreq}</changefreq>\n    <priority>${entry.priority}</priority>\n  </url>`
       )

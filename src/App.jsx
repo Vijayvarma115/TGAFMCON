@@ -175,6 +175,23 @@ const CME_ACTIVITIES = [
 
 ];
 
+const JOURNAL_TAB_KEYS = [
+  'journal',
+  'journal-article',
+  'aims-scope',
+  'editorial-board',
+  'policy-editorial-process',
+  'policy-open-access',
+  'policy-copyright',
+  'policy-publication-ethics',
+  'policy-licensing',
+  'policy-author-charges',
+  'publisher-info',
+  'instr-editors',
+  'instr-reviewers',
+  'instr-authors'
+];
+
 
 
 const App = () => {
@@ -274,7 +291,12 @@ const App = () => {
   useEffect(() => {
     const syncFromUrl = () => {
       const params = new URLSearchParams(window.location.search);
+      const tabFromUrl = params.get('tab') || '';
       const articleId = params.get('article') || '';
+
+      if (tabFromUrl && JOURNAL_TAB_KEYS.includes(tabFromUrl)) {
+        setActiveTab(tabFromUrl);
+      }
 
       if (articleId) {
         setSelectedArticleId(articleId);
@@ -421,9 +443,9 @@ const App = () => {
     setSelectedJournalIssue('issue-1');
 
     const url = new URL(window.location.href);
+    url.searchParams.set('tab', 'journal');
     url.searchParams.delete('article');
-    const query = url.searchParams.toString();
-    window.history.pushState({}, '', `${url.pathname}${query ? `?${query}` : ''}`);
+    window.history.pushState({}, '', `${url.pathname}?${url.searchParams.toString()}`);
   };
 
   const openArticleDetails = (article) => {
@@ -433,6 +455,7 @@ const App = () => {
     setActiveTab('journal-article');
 
     const url = new URL(window.location.href);
+    url.searchParams.set('tab', 'journal-article');
     url.searchParams.set('article', article._id);
     window.history.pushState({}, '', `${url.pathname}?${url.searchParams.toString()}`);
   };
@@ -498,22 +521,7 @@ const App = () => {
   const issueTwoArticles = articles.filter((article) => !issueOneIds.has(String(article._id)));
   const displayedIssueArticles = selectedJournalIssue === 'issue-1' ? issueOneArticles : issueTwoArticles;
 
-  const JOURNAL_TABS = new Set([
-    'journal',
-    'journal-article',
-    'aims-scope',
-    'editorial-board',
-    'policy-editorial-process',
-    'policy-open-access',
-    'policy-copyright',
-    'policy-publication-ethics',
-    'policy-licensing',
-    'policy-author-charges',
-    'publisher-info',
-    'instr-editors',
-    'instr-reviewers',
-    'instr-authors'
-  ]);
+  const JOURNAL_TABS = new Set(JOURNAL_TAB_KEYS);
 
   const isJournalContext = JOURNAL_TABS.has(activeTab);
   const brandAcronym = 'TGAFM';
