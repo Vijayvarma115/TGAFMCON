@@ -27,6 +27,7 @@ const ADMIN_CODE = process.env.ADMIN_CODE || 'TGAFM-ADMIN-2026';
 const JWT_SECRET = process.env.JWT_SECRET || 'replace-this-jwt-secret-in-production';
 const JOURNAL_DIR = path.join(__dirname, 'public', 'journals');
 const DIST_DIR = path.join(__dirname, 'dist');
+const PUBLIC_SITE_URL = (process.env.PUBLIC_SITE_URL || 'https://ajfm-tgafm.org').replace(/\/$/, '');
 const hasCloudinaryConfig = Boolean(
   process.env.CLOUDINARY_CLOUD_NAME &&
   process.env.CLOUDINARY_API_KEY &&
@@ -127,7 +128,53 @@ const ArticleSchema = new mongoose.Schema({
 
 const Article = mongoose.model('Article', ArticleSchema);
 
+const escapeXml = (value = '') =>
+  String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+
 // --- API ROUTES ---
+
+/**
+ * @route   GET /sitemap.xml
+ * @desc    Dynamic sitemap for homepage + article detail URLs
+ */
+app.get('/sitemap.xml', async (_req, res) => {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const articles = await Article.find({}, { _id: 1 }).sort({ _id: -1 }).lean();
+
+    const baseEntries = [
+      {
+        loc: `${PUBLIC_SITE_URL}/`,
+        changefreq: 'daily',
+        priority: '1.0'
+      }
+    ];
+
+    const articleEntries = articles.map((article) => ({
+      loc: `${PUBLIC_SITE_URL}/?article=${encodeURIComponent(String(article._id))}`,
+      changefreq: 'weekly',
+      priority: '0.8'
+    }));
+
+    const urls = [...baseEntries, ...articleEntries]
+      .map(
+        (entry) => `  <url>\n    <loc>${escapeXml(entry.loc)}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${entry.changefreq}</changefreq>\n    <priority>${entry.priority}</priority>\n  </url>`
+      )
+      .join('\n');
+
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>`;
+
+    res.set('Content-Type', 'application/xml');
+    res.send(xml);
+  } catch (_err) {
+    res.status(500).send('Failed to generate sitemap');
+  }
+});
 
 /**
  * @route   POST /api/admin/login
