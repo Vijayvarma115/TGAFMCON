@@ -161,7 +161,10 @@ const OBJECTIVES = [
 
 const CME_ACTIVITIES = [
 
-  { year: "2026", title: "TGAFMCON-2026: Standard Medicolegal Practices (Upcoming - Not Yet Completed)", host: "Kakatiya Medical College", place: "Warangal", date: "11th & 12th July" },
+    { year: "2026", title: "TGAFMCON-2026: Standard Medicolegal Practices (UPCOMING)", host: "Gandhi Medical College", place: "Hyderabad", date: "11th & 12th April" },
+
+  { year: "2025", title: "TGAFMCON-2025: Standard Medicolegal Practices", host: "Kakatiya Medical College", place: "Warangal", date: "11th & 12th July" },
+
 
   { year: "2024", title: "Insights into the Criminal Intent", host: "KAMSRC", place: "Hyderabad", date: "27th January" },
 
