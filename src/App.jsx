@@ -313,6 +313,10 @@ const App = () => {
     return () => window.removeEventListener('popstate', syncFromUrl);
   }, []);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [activeTab]);
+
   const resetJournalForm = () => {
     setJournalForm({
       title: '',
@@ -587,7 +591,7 @@ const App = () => {
       </div>
 
       <div className="bg-white">
-        <div className="max-w-7xl mx-auto px-4 flex justify-between h-16 items-center">
+        <div className="max-w-7xl mx-auto px-4 flex justify-between h-16 items-center gap-3">
           <div className="hidden lg:flex space-x-1 items-center">
           <button onClick={() => setActiveTab('home')} className="px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all hover:text-blue-900 text-slate-600 bg-transparent border-none shadow-none">Home</button>
 
@@ -685,11 +689,74 @@ const App = () => {
           <button onClick={() => setActiveTab('sitemap')} className="px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all hover:text-blue-900 text-slate-600 bg-transparent border-none shadow-none">Site Map</button>
           </div>
 
-          <button className="lg:hidden p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}> {isMenuOpen ? <X /> : <Menu />} </button>
+          <button className="lg:hidden p-2 rounded-lg border border-slate-200 text-slate-700" onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle navigation menu"> {isMenuOpen ? <X /> : <Menu />} </button>
         </div>
+
+        {isMenuOpen && (
+          <div className="lg:hidden border-t border-slate-100 bg-white px-4 py-4 shadow-lg max-h-[75vh] overflow-y-auto">
+            <div className="space-y-3 text-[11px] font-black uppercase tracking-widest text-slate-700">
+              <button onClick={() => { setActiveTab('home'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 transition">Home</button>
+
+              <div className="rounded-2xl border border-slate-100 bg-slate-50">
+                <button onClick={() => setIsAcademyOpen(!isAcademyOpen)} className="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-left">
+                  <span>About Us</span>
+                  <ChevronDown size={14} className={isAcademyOpen ? 'rotate-180 transition-transform' : 'transition-transform'} />
+                </button>
+                {isAcademyOpen && (
+                  <div className="px-3 pb-3 space-y-2 text-[10px]">
+                    <button onClick={() => { setActiveTab('academy-about'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">About TGAFM</button>
+                    <button onClick={() => { setActiveTab('academy-present'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Present Executive Body</button>
+                    <button onClick={() => { setActiveTab('academy-past-1'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Past Executive Body 2014 - 2024</button>
+                    <button onClick={() => { setActiveTab('academy-past-2'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Past Executive Body 2024 - 2026</button>
+                  </div>
+                )}
+              </div>
+
+              <div className="rounded-2xl border border-slate-100 bg-slate-50">
+                <button onClick={() => setIsInstructionsOpen(!isInstructionsOpen)} className="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-left">
+                  <span>Journal</span>
+                  <ChevronDown size={14} className={isInstructionsOpen ? 'rotate-180 transition-transform' : 'transition-transform'} />
+                </button>
+                {isInstructionsOpen && (
+                  <div className="px-3 pb-3 space-y-2 text-[10px]">
+                    <button onClick={() => { setActiveTab('aims-scope'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Aims & Scope</button>
+                    <button onClick={() => { setActiveTab('editorial-board'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Editorial Board</button>
+                    <button onClick={() => { setActiveTab('policy-editorial-process'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Editorial Process & Peer Review</button>
+                    <button onClick={() => { setActiveTab('instr-editors'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Instructions - Editors</button>
+                    <button onClick={() => { setActiveTab('instr-reviewers'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Instructions - Reviewers</button>
+                    <button onClick={() => { setActiveTab('instr-authors'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Instructions - Authors</button>
+                    <button onClick={() => { setActiveTab('journal'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Publications 2025 / 2026</button>
+                    <button onClick={() => { setActiveTab('policy-open-access'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Open Access Policy</button>
+                    <button onClick={() => { setActiveTab('policy-copyright'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Copyright Policy</button>
+                    <button onClick={() => { setActiveTab('policy-publication-ethics'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Publication Ethics</button>
+                    <button onClick={() => { setActiveTab('policy-author-charges'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Publication Charges</button>
+                    <button onClick={() => { setActiveTab('publisher-info'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Publisher Information</button>
+                  </div>
+                )}
+              </div>
+
+              <div className="rounded-2xl border border-slate-100 bg-slate-50">
+                <button onClick={() => setIsPoliciesOpen(!isPoliciesOpen)} className="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-left">
+                  <span>Members & Conferences</span>
+                  <ChevronDown size={14} className={isPoliciesOpen ? 'rotate-180 transition-transform' : 'transition-transform'} />
+                </button>
+                {isPoliciesOpen && (
+                  <div className="px-3 pb-3 space-y-2 text-[10px]">
+                    <button onClick={() => { setActiveTab('academy-members'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Members</button>
+                    <button onClick={() => { setActiveTab('academy-registration'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Registration Form</button>
+                    <button onClick={() => { setActiveTab('conference'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Conference 2026</button>
+                    <button onClick={() => { setActiveTab('academic-activities'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Academic Activities</button>
+                    <button onClick={() => { setActiveTab('academy-notices'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Announcements</button>
+                    <button onClick={() => { setActiveTab('sitemap'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Site Map</button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
-      <div className="bg-amber-50 border-t border-b border-amber-200 text-amber-900 text-xs font-black uppercase tracking-wider py-2">
+      <div className="hidden sm:block bg-amber-50 border-t border-b border-amber-200 text-amber-900 text-xs font-black uppercase tracking-wider py-2">
         <marquee
           behavior="scroll"
           direction="left"
@@ -715,13 +782,13 @@ const App = () => {
 
       
 
-      <main className="max-w-7xl mx-auto px-4 py-12">
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 py-8 sm:py-12">
 
         {/* HOME */}
 
         {activeTab === 'home' && (
 
-          <div className="py-12 md:py-20 text-center animate-in fade-in duration-1000 flex flex-col items-center">  
+          <div className="py-8 md:py-20 text-center animate-in fade-in duration-1000 flex flex-col items-center">  
 
             {/* Official Logo */}
             <div className="w-44 h-44 md:w-60 md:h-60 mb-10 flex items-center justify-center bg-white rounded-[2.5rem] border border-slate-100 shadow-xl p-3">
@@ -729,7 +796,7 @@ const App = () => {
             </div>
 
             {/* Main Organization Title */}
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-blue-900 mb-4 uppercase tracking-tighter leading-tight max-w-4xl">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-blue-900 mb-4 uppercase tracking-tighter leading-tight max-w-4xl px-2">
               Telangana Academy of <br className="hidden md:block" /> Forensic Medicine
             </h2>
 
@@ -739,12 +806,12 @@ const App = () => {
             </h3>
 
             {/* Description */}
-            <p className="text-slate-600 font-medium mb-12 max-w-2xl mx-auto text-lg leading-relaxed">
+            <p className="text-slate-600 font-medium mb-10 md:mb-12 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed px-2">
               The official digital secretariat, scholarly repository, and professional body representing forensic medicine experts across Telangana.
             </p>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row justify-center gap-5 w-full sm:w-auto px-4">
+            <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-5 w-full sm:w-auto px-4">
 
               <button onClick={openJournalArchive} className="bg-red-600 text-white px-10 py-4 w-full sm:w-auto rounded-2xl font-black uppercase text-[10px] sm:text-xs tracking-widest shadow-xl hover:bg-red-700 transition">Browse Journal</button>
 
@@ -1256,7 +1323,7 @@ const App = () => {
 
                    <div className="mb-12">
 
-                      <h3 className="text-8xl font-black text-blue-900 leading-none mb-4">217</h3>
+                      <h3 className="text-8xl font-black text-blue-900 leading-none mb-4">252</h3>
 
                       <p className="text-lg font-bold text-slate-500 uppercase tracking-widest">Registered Life Members</p>
 
@@ -1270,7 +1337,7 @@ const App = () => {
 
                    <p className="text-slate-500 text-sm leading-relaxed mb-12 max-w-md mx-auto font-medium">
 
-                      The complete directory of all 217 life members is available for download as an official PDF list.
+                      The complete directory of all 252 life members is available for download as an official PDF list.
 
                    </p>
 
@@ -1430,7 +1497,7 @@ const App = () => {
 
              <div className="flex flex-col md:flex-row items-center gap-10 mb-20">
 
-                <div className="md:w-2/3"><span className="text-red-600 font-black text-[10px] uppercase tracking-[0.4em] mb-4 block">Institutional Profile</span><h2 className="text-4xl font-black text-blue-900 tracking-tighter uppercase mb-6 leading-tight">About TGAFM</h2><p className="text-slate-600 leading-relaxed font-medium mb-8 text-justify">The Telangana Academy of Forensic Medicine (TGAFM) is a professional organization dedicated to the advancement of Forensic Medicine. Officially registered on <strong>5th June 2014</strong> under the Andhra Pradesh Societies Registration Act, 2001. Today, 217 members have become life members, serving as a platform for excellence.</p></div>
+                <div className="md:w-2/3"><span className="text-red-600 font-black text-[10px] uppercase tracking-[0.4em] mb-4 block">Institutional Profile</span><h2 className="text-4xl font-black text-blue-900 tracking-tighter uppercase mb-6 leading-tight">About TGAFM</h2><p className="text-slate-600 leading-relaxed font-medium mb-8 text-justify">The Telangana Academy of Forensic Medicine (TGAFM) is a professional organization dedicated to the advancement of Forensic Medicine. Officially registered on <strong>5th June 2014</strong> under the Andhra Pradesh Societies Registration Act, 2001. Today, 252 members have become life members, serving as a platform for excellence.</p></div>
 
                 <div className="md:w-1/3 p-8 bg-white rounded-[4rem] border shadow-2xl flex items-center justify-center"><img src="/logo.png" alt="TGAFM" className="w-full h-full object-contain" /></div>
 
