@@ -467,7 +467,6 @@ const App = () => {
     window.history.pushState({}, '', `${url.pathname}?${url.searchParams.toString()}`);
   };
 
-  const selectedArticle = articles.find((art) => String(art._id) === String(selectedArticleId));
   const normalizeJournalTitle = (value = '') => value.toLowerCase().replace(/[^a-z0-9]/g, '');
 
   const ISSUE_ONE_LAYOUT = [
@@ -508,7 +507,45 @@ const App = () => {
     }
   ];
 
-  const findIssueOneArticle = (matchKey) => {
+  const ISSUE_TWO_LAYOUT = [
+    {
+      key: 'Artificial Intelligence in Forensic Medicine and Toxicology',
+      category: 'EDITORIAL',
+      title: 'Artificial Intelligence in Forensic Medicine and Toxicology',
+      authors: 'Details to be updated',
+      pdfUrl: '/journals/Artificial Intelligence in Forensic Medicine and Toxicology.pdf'
+    },
+    {
+      key: 'Recent Advances In Forensic Anthropology - A Systematic Analysis',
+      category: 'ORIGINAL ARTICLE',
+      title: 'Recent Advances In Forensic Anthropology - A Systematic Analysis',
+      authors: 'Details to be updated',
+      pdfUrl: '/journals/Recent Advances In Forensic Anthropology - A Systematic Analysis .pdf'
+    },
+    {
+      key: 'Intimate Partner Homicide by Rifle Gunshot Injury to Head - a case report',
+      category: 'Case Reports',
+      title: 'Intimate Partner Homicide by Rifle Gunshot Injury to Head - a case report',
+      authors: 'Details to be updated',
+      pdfUrl: '/journals/Intimate Partner Homicide by Rifle Gunshot Injury to Head - a case report.pdf'
+    },
+    {
+      key: 'Smothering with Cervical Fracture Simulating Natural Death - A Case Report',
+      category: 'Case Reports',
+      title: 'Smothering with Cervical Fracture Simulating Natural Death - A Case Report',
+      authors: 'Details to be updated',
+      pdfUrl: '/journals/Smothering with Cervical Fracture Simulating Natural Death - A Case Report.pdf'
+    },
+    {
+      key: 'Accidental Familial Electrocution In A Wet Agricultural Field - A Case Report',
+      category: 'Case Reports',
+      title: 'Accidental Familial Electrocution In A Wet Agricultural Field - A Case Report',
+      authors: 'Details to be updated',
+      pdfUrl: '/journals/Accidental Familial Electrocution In A Wet Agricultural Field - A Case Report.pdf'
+    }
+  ];
+
+  const findArticleByMatchKey = (matchKey) => {
     const normalizedKey = normalizeJournalTitle(matchKey);
     return articles.find((article) => {
       const normalizedArticleTitle = normalizeJournalTitle(article.title || '');
@@ -519,13 +556,25 @@ const App = () => {
     });
   };
 
+  const buildStaticIssueArticle = (layout, issueTag, index) => ({
+    _id: `static-${issueTag}-${index + 1}`,
+    title: layout.title,
+    authors: layout.authors || 'Details to be updated',
+    affiliations: '',
+    abstract: '',
+    doi: '',
+    articleType: layout.category,
+    pdfUrl: layout.pdfUrl,
+    issueLayout: layout
+  });
+
   const isPlaceholderAuthorText = (value = '') =>
     String(value).trim().toLowerCase() === 'details to be updated';
 
   const getArticleDisplayAuthors = (article) => {
     if (!article) return '';
 
-    const issueOneLayout = ISSUE_ONE_LAYOUT.find((layout) => {
+    const matchedLayout = [...ISSUE_ONE_LAYOUT, ...ISSUE_TWO_LAYOUT].find((layout) => {
       const normalizedLayoutTitle = normalizeJournalTitle(layout.title || '');
       const normalizedArticleTitle = normalizeJournalTitle(article.title || '');
       return (
@@ -535,17 +584,25 @@ const App = () => {
       );
     });
 
-    return issueOneLayout?.authors || (Array.isArray(article.authors) ? article.authors.join(', ') : article.authors || '');
+    return matchedLayout?.authors || (Array.isArray(article.authors) ? article.authors.join(', ') : article.authors || '');
   };
 
   const issueOneArticles = ISSUE_ONE_LAYOUT.map((layout) => {
-    const matchedArticle = findIssueOneArticle(layout.key);
+    const matchedArticle = findArticleByMatchKey(layout.key);
     return matchedArticle ? { ...matchedArticle, issueLayout: layout } : null;
   }).filter(Boolean);
 
-  const issueOneIds = new Set(issueOneArticles.map((article) => String(article._id)));
-  const issueTwoArticles = articles.filter((article) => !issueOneIds.has(String(article._id)));
+  const issueTwoArticles = ISSUE_TWO_LAYOUT.map((layout, index) => {
+    const matchedArticle = findArticleByMatchKey(layout.key);
+    return matchedArticle
+      ? { ...matchedArticle, issueLayout: layout, pdfUrl: matchedArticle.pdfUrl || layout.pdfUrl }
+      : buildStaticIssueArticle(layout, 'issue-2', index);
+  });
+
+  const allJournalArticles = [...issueOneArticles, ...issueTwoArticles];
   const displayedIssueArticles = selectedJournalIssue === 'issue-1' ? issueOneArticles : issueTwoArticles;
+
+  const selectedArticle = allJournalArticles.find((art) => String(art._id) === String(selectedArticleId));
 
   const JOURNAL_TABS = new Set(JOURNAL_TAB_KEYS);
 
@@ -1323,7 +1380,7 @@ const App = () => {
 
                    <div className="mb-12">
 
-                      <h3 className="text-8xl font-black text-blue-900 leading-none mb-4">252</h3>
+                      <h3 className="text-8xl font-black text-blue-900 leading-none mb-4">253</h3>
 
                       <p className="text-lg font-bold text-slate-500 uppercase tracking-widest">Registered Life Members</p>
 
@@ -1337,7 +1394,7 @@ const App = () => {
 
                    <p className="text-slate-500 text-sm leading-relaxed mb-12 max-w-md mx-auto font-medium">
 
-                      The complete directory of all 252 life members is available for download as an official PDF list.
+                      The complete directory of all 253 life members is available for download as an official PDF list.
 
                    </p>
 
@@ -1497,7 +1554,7 @@ const App = () => {
 
              <div className="flex flex-col md:flex-row items-center gap-10 mb-20">
 
-                <div className="md:w-2/3"><span className="text-red-600 font-black text-[10px] uppercase tracking-[0.4em] mb-4 block">Institutional Profile</span><h2 className="text-4xl font-black text-blue-900 tracking-tighter uppercase mb-6 leading-tight">About TGAFM</h2><p className="text-slate-600 leading-relaxed font-medium mb-8 text-justify">The Telangana Academy of Forensic Medicine (TGAFM) is a professional organization dedicated to the advancement of Forensic Medicine. Officially registered on <strong>5th June 2014</strong> under the Andhra Pradesh Societies Registration Act, 2001. Today, 252 members have become life members, serving as a platform for excellence.</p></div>
+                <div className="md:w-2/3"><span className="text-red-600 font-black text-[10px] uppercase tracking-[0.4em] mb-4 block">Institutional Profile</span><h2 className="text-4xl font-black text-blue-900 tracking-tighter uppercase mb-6 leading-tight">About TGAFM</h2><p className="text-slate-600 leading-relaxed font-medium mb-8 text-justify">The Telangana Academy of Forensic Medicine (TGAFM) is a professional organization dedicated to the advancement of Forensic Medicine. Officially registered on <strong>5th June 2014</strong> under the Andhra Pradesh Societies Registration Act, 2001. Today, 253 members have become life members, serving as a platform for excellence.</p></div>
 
                 <div className="md:w-1/3 p-8 bg-white rounded-[4rem] border shadow-2xl flex items-center justify-center"><img src="/logo.png" alt="TGAFM" className="w-full h-full object-contain" /></div>
 
