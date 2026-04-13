@@ -34,6 +34,7 @@ const ADMIN_TOKEN_KEY = 'tgafmAdminToken';
 const MEMBERSHIP_FORM_LINK = "https://docs.google.com/forms/d/e/1FAIpQLScxmzkrzjct3TlcftIPLKBprg8VUxkhaenRXOzGQ5nRqng77A/viewform?usp=header";
 
 const CONFERENCE_FORM_LINK = "https://docs.google.com/forms/d/e/1FAIpQLSfvefhMeMhYkJQWz22NZU11Ck0koWQh3aTRJKDXH2Mhmxvw0Q/viewform";
+const FLYER_PDF_PATH = '/TGAFM%205K%20RUN%20FLYER.pdf';
 
 
 
@@ -224,6 +225,8 @@ const App = () => {
   const [isAdminLoading, setIsAdminLoading] = useState(false);
 
   const [isUploadingJournal, setIsUploadingJournal] = useState(false);
+  const [flyerPageImages, setFlyerPageImages] = useState({ 1: '', 2: '' });
+  const [isFlyerLoading, setIsFlyerLoading] = useState(false);
 
   const [journalFile, setJournalFile] = useState(null);
   const [selectedArticleId, setSelectedArticleId] = useState('');
@@ -316,6 +319,55 @@ const App = () => {
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
   }, [activeTab]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const renderFlyerPagesAsImages = async () => {
+      setIsFlyerLoading(true);
+
+      try {
+        const pdfjsLib = await import('pdfjs-dist');
+        pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
+
+        const pdf = await pdfjsLib.getDocument(FLYER_PDF_PATH).promise;
+        const nextImages = { 1: '', 2: '' };
+
+        for (const pageNumber of [1, 2]) {
+          const page = await pdf.getPage(pageNumber);
+          const viewport = page.getViewport({ scale: 1.35 });
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d', { alpha: false });
+
+          if (!context) continue;
+
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+
+          await page.render({ canvasContext: context, viewport }).promise;
+          nextImages[pageNumber] = canvas.toDataURL('image/jpeg', 0.9);
+        }
+
+        if (!cancelled) {
+          setFlyerPageImages(nextImages);
+        }
+      } catch (_error) {
+        if (!cancelled) {
+          setFlyerPageImages({ 1: '', 2: '' });
+        }
+      } finally {
+        if (!cancelled) {
+          setIsFlyerLoading(false);
+        }
+      }
+    };
+
+    renderFlyerPagesAsImages();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const resetJournalForm = () => {
     setJournalForm({
@@ -523,11 +575,11 @@ const App = () => {
       pdfUrl: '/journals/Recent Advances In Forensic Anthropology - A Systematic Analysis .pdf'
     },
     {
-      key: 'Intimate Partner Homicide by Rifle Gunshot Injury to Head - a case report',
+      key: 'Intimate Partner Homicide by Rifle Gunshot Injury to Head - A Case Report',
       category: 'Case Reports',
-      title: 'Intimate Partner Homicide by Rifle Gunshot Injury to Head - a case report',
+      title: 'Intimate Partner Homicide by Rifle Gunshot Injury to Head - A Case Report',
       authors: 'Details to be updated',
-      pdfUrl: '/journals/Intimate Partner Homicide by Rifle Gunshot Injury to Head - a case report.pdf'
+      pdfUrl: '/journals/Intimate Partner Homicide by Rifle Gunshot Injury to Head - A Case Report.pdf'
     },
     {
       key: 'Smothering with Cervical Fracture Simulating Natural Death - A Case Report',
@@ -813,16 +865,43 @@ const App = () => {
         )}
       </div>
 
-      <div className="hidden sm:block bg-amber-50 border-t border-b border-amber-200 text-amber-900 text-xs font-black uppercase tracking-wider py-2">
-        <marquee
-          behavior="scroll"
-          direction="left"
-          scrollAmount="10"
-          onMouseEnter={(e) => e.currentTarget.stop()}
-          onMouseLeave={(e) => e.currentTarget.start()}
-        >
-          Upcoming Conference: TGAFMCON - 2026 | 11th and 12th April, 2026 | 2nd Annual State Conference | Organized by Department of Forensic Medicine and Toxicology, Gandhi Medical College, Secunderabad | Venue: Swami Vivekananda Auditorium, Gandhi Medical College
-        </marquee>
+      <div className="border-t border-b border-amber-300 bg-gradient-to-r from-amber-100 via-orange-100 to-amber-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div className="flex-1">
+              <span className="inline-flex items-center rounded-full bg-amber-200 text-amber-900 text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1 border border-amber-300">
+                Registrations Open
+              </span>
+              <p className="mt-2 text-sm sm:text-base font-extrabold text-slate-900 uppercase tracking-wide">
+                TGAFM 5K Run - 10th May 2026 (Sunday)
+              </p>
+              <p className="text-xs sm:text-sm font-semibold text-slate-700">
+                6:00 AM to 10:00 AM | Necklace Road, Hyderabad
+              </p>
+              <p className="text-[11px] sm:text-xs font-bold text-amber-900 mt-1 uppercase tracking-wide">
+                On the eve of National Forensic Medicine Day
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:shrink-0">
+              <a
+                href="https://forms.gle/iFGqZbxfguSMFEPx6"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 bg-slate-900 text-white text-xs font-black uppercase tracking-wider px-4 py-2.5 rounded-lg hover:bg-slate-800 transition"
+              >
+                Register Now <ExternalLink size={14} />
+              </a>
+              <a
+                href="/TGAFM%205K%20RUN%20FLYER.pdf"
+                download
+                className="inline-flex items-center justify-center gap-2 bg-white text-slate-900 text-xs font-black uppercase tracking-wider px-4 py-2.5 rounded-lg border border-slate-300 hover:bg-slate-50 transition"
+              >
+                Download Flyer <Download size={14} />
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
 
     </nav>
@@ -875,6 +954,55 @@ const App = () => {
               <button onClick={() => setActiveTab('academy-registration')} className="bg-white border-2 border-slate-200 text-slate-800 px-10 py-4 w-full sm:w-auto rounded-2xl font-black uppercase text-[10px] sm:text-xs tracking-widest hover:bg-slate-50 transition shadow-sm">Join TGAFM</button>
 
             </div>
+
+            <section className="w-full max-w-6xl mt-14 bg-white border border-slate-200 rounded-3xl p-5 sm:p-8 text-left shadow-lg">
+              <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-500">Featured Event</p>
+                  <h3 className="text-xl sm:text-2xl font-black text-slate-900 uppercase tracking-wide mt-1">TGAFM 5K Run Flyer</h3>
+                  <p className="text-sm text-slate-600 font-semibold mt-2">10th May 2026 (Sunday) | 6:00 AM to 10:00 AM | Necklace Road, Hyderabad</p>
+                </div>
+                <a
+                  href="/TGAFM%205K%20RUN%20FLYER.pdf"
+                  download
+                  className="inline-flex items-center justify-center gap-2 bg-slate-900 text-white text-xs font-black uppercase tracking-wider px-4 py-2.5 rounded-lg hover:bg-slate-800 transition"
+                >
+                  <Download size={14} /> Download Flyer
+                </a>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                <article className="bg-slate-50 border border-slate-200 rounded-2xl p-3">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2"></p>
+                  {flyerPageImages[1] ? (
+                    <img
+                      src={flyerPageImages[1]}
+                      alt="TGAFM 5K Run Flyer First Page"
+                      className="w-full h-[500px] rounded-xl border border-slate-200 bg-white object-contain"
+                    />
+                  ) : (
+                    <div className="w-full h-[500px] rounded-xl border border-slate-200 bg-white grid place-items-center text-xs font-bold uppercase tracking-wider text-slate-500">
+                      {isFlyerLoading ? 'Loading First Page...' : 'First Page Preview Unavailable'}
+                    </div>
+                  )}
+                </article>
+
+                <article className="bg-slate-50 border border-slate-200 rounded-2xl p-3">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2"></p>
+                  {flyerPageImages[2] ? (
+                    <img
+                      src={flyerPageImages[2]}
+                      alt="TGAFM 5K Run Flyer Second Page"
+                      className="w-full h-[500px] rounded-xl border border-slate-200 bg-white object-contain"
+                    />
+                  ) : (
+                    <div className="w-full h-[500px] rounded-xl border border-slate-200 bg-white grid place-items-center text-xs font-bold uppercase tracking-wider text-slate-500">
+                      {isFlyerLoading ? 'Loading Second Page...' : 'Second Page Preview Unavailable'}
+                    </div>
+                  )}
+                </article>
+              </div>
+            </section>
 
           </div>
 
@@ -1310,31 +1438,56 @@ const App = () => {
 
                 <div className="relative z-10">
 
-                   <div className="w-20 h-20 bg-blue-50 rounded-3xl flex items-center justify-center text-blue-600 mx-auto mb-8 shadow-inner">
-
-                      <Megaphone size={40}/>
-
-                   </div>
-
                    <h2 className="text-4xl font-black text-blue-900 tracking-tighter uppercase mb-2">Announcements</h2>
 
-                   <p className="text-slate-400 font-bold uppercase tracking-[0.3em] mb-12 text-[10px]">TGAFMCON - 2026 Updates</p>
+                   <p className="text-slate-400 font-bold uppercase tracking-[0.3em] mb-12 text-[10px]">TGAFM 5K Run Updates</p>
 
                    
 
                    <p className="text-slate-500 text-lg leading-relaxed mb-12 max-w-md mx-auto font-medium">
 
-                      The official brochure for the 2nd Annual State Conference (TGAFMCON - 2026) is now available for download.
+                     Registrations are open for the TGAFM 5K Run on 10th May 2026 (Sunday), 6:00 AM to 10:00 AM at Necklace Road, Hyderabad. Download the latest flyer below.
 
                    </p>
 
 
 
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                      <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3">
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2">First Page</p>
+                        {flyerPageImages[1] ? (
+                          <img
+                            src={flyerPageImages[1]}
+                            alt="TGAFM 5K Run Flyer First Page"
+                            className="w-full h-[520px] rounded-xl border border-slate-200 bg-white object-contain"
+                          />
+                        ) : (
+                          <div className="w-full h-[520px] rounded-xl border border-slate-200 bg-white grid place-items-center text-xs font-bold uppercase tracking-wider text-slate-500">
+                            {isFlyerLoading ? 'Loading First Page...' : 'First Page Preview Unavailable'}
+                          </div>
+                        )}
+                      </div>
+                      <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3">
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2">Second Page</p>
+                        {flyerPageImages[2] ? (
+                          <img
+                            src={flyerPageImages[2]}
+                            alt="TGAFM 5K Run Flyer Second Page"
+                            className="w-full h-[520px] rounded-xl border border-slate-200 bg-white object-contain"
+                          />
+                        ) : (
+                          <div className="w-full h-[520px] rounded-xl border border-slate-200 bg-white grid place-items-center text-xs font-bold uppercase tracking-wider text-slate-500">
+                            {isFlyerLoading ? 'Loading Second Page...' : 'Second Page Preview Unavailable'}
+                          </div>
+                        )}
+                      </div>
+                   </div>
+
                    <div className="flex flex-col items-center gap-6">
 
                       <a 
 
-                        href="/TGAFMCON-2026.pdf" 
+                        href="/TGAFM%205K%20RUN%20FLYER.pdf" 
 
                         download 
 
@@ -1342,7 +1495,7 @@ const App = () => {
 
                       >
 
-                        <Download size={20}/> Download Conference Brochure
+                        <Download size={20}/> Download 5K Run Flyer
 
                       </a>
 
