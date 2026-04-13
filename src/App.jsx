@@ -162,7 +162,7 @@ const OBJECTIVES = [
 
 const CME_ACTIVITIES = [
 
-    { year: "2026", title: "TGAFMCON-2026: Standard Medicolegal Practices (UPCOMING)", host: "Gandhi Medical College", place: "Hyderabad", date: "11th & 12th April" },
+    { year: "2026", title: "TGAFMCON-2026: HOLISTIC FORENSICS: BRIDGING CRIME, CLINIC & COURT", host: "Gandhi Medical College", place: "Hyderabad", date: "11th & 12th April" },
 
   { year: "2025", title: "TGAFMCON-2025: Standard Medicolegal Practices", host: "Kakatiya Medical College", place: "Warangal", date: "11th & 12th July" },
 
@@ -781,15 +781,7 @@ const App = () => {
             </div>
           </div>
 
-          <div className="group relative z-40">
-            <button className="px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all hover:text-blue-900 text-slate-600 flex items-center gap-1 bg-transparent border-none shadow-none">
-              Conferences <ChevronDown size={14} className="group-hover:rotate-180 transition-transform"/>
-            </button>
-            <div className="absolute top-full left-0 w-56 bg-white border border-slate-100 rounded-2xl shadow-xl py-3 hidden group-hover:block transition-opacity opacity-100">
-              <button onClick={() => setActiveTab('conference')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">2026</button>
-              <button onClick={() => setActiveTab('conference')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">Upcoming</button>
-            </div>
-          </div>
+          <button onClick={() => setActiveTab('conference')} className="px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all hover:text-blue-900 text-slate-600 bg-transparent border-none shadow-none">Conferences</button>
 
           <button onClick={() => setActiveTab('academic-activities')} className="px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all hover:text-blue-900 text-slate-600 bg-transparent border-none shadow-none">Pg Corner / Academic Activities</button>
 
@@ -853,7 +845,6 @@ const App = () => {
                   <div className="px-3 pb-3 space-y-2 text-[10px]">
                     <button onClick={() => { setActiveTab('academy-members'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Members</button>
                     <button onClick={() => { setActiveTab('academy-registration'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Registration Form</button>
-                    <button onClick={() => { setActiveTab('conference'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Conference 2026</button>
                     <button onClick={() => { setActiveTab('academic-activities'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Academic Activities</button>
                     <button onClick={() => { setActiveTab('academy-notices'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Announcements</button>
                     <button onClick={() => { setActiveTab('sitemap'); setIsMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-white hover:bg-slate-100 transition">Site Map</button>
@@ -865,44 +856,46 @@ const App = () => {
         )}
       </div>
 
-      <div className="border-t border-b border-amber-300 bg-gradient-to-r from-amber-100 via-orange-100 to-amber-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-            <div className="flex-1">
-              <span className="inline-flex items-center rounded-full bg-amber-200 text-amber-900 text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1 border border-amber-300">
-                Registrations Open
-              </span>
-              <p className="mt-2 text-sm sm:text-base font-extrabold text-slate-900 uppercase tracking-wide">
-                TGAFM 5K Run - 10th May 2026 (Sunday)
-              </p>
-              <p className="text-xs sm:text-sm font-semibold text-slate-700">
-                6:00 AM to 10:00 AM | Necklace Road, Hyderabad
-              </p>
-              <p className="text-[11px] sm:text-xs font-bold text-amber-900 mt-1 uppercase tracking-wide">
-                On the eve of National Forensic Medicine Day
-              </p>
-            </div>
+      {activeTab === 'home' && (
+        <div className="border-t border-b border-amber-300 bg-gradient-to-r from-amber-100 via-orange-100 to-amber-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+              <div className="flex-1">
+                <span className="inline-flex items-center rounded-full bg-amber-200 text-amber-900 text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1 border border-amber-300">
+                  Registrations Open
+                </span>
+                <p className="mt-2 text-sm sm:text-base font-extrabold text-slate-900 uppercase tracking-wide">
+                  TGAFM 5K Run - 10th May 2026 (Sunday)
+                </p>
+                <p className="text-xs sm:text-sm font-semibold text-slate-700">
+                  6:00 AM to 10:00 AM | Necklace Road, Hyderabad
+                </p>
+                <p className="text-[11px] sm:text-xs font-bold text-amber-900 mt-1 uppercase tracking-wide">
+                  On the eve of National Forensic Medicine Day
+                </p>
+              </div>
 
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:shrink-0">
-              <a
-                href="https://forms.gle/iFGqZbxfguSMFEPx6"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 bg-slate-900 text-white text-xs font-black uppercase tracking-wider px-4 py-2.5 rounded-lg hover:bg-slate-800 transition"
-              >
-                Register Now <ExternalLink size={14} />
-              </a>
-              <a
-                href="/TGAFM%205K%20RUN%20FLYER.pdf"
-                download
-                className="inline-flex items-center justify-center gap-2 bg-white text-slate-900 text-xs font-black uppercase tracking-wider px-4 py-2.5 rounded-lg border border-slate-300 hover:bg-slate-50 transition"
-              >
-                Download Flyer <Download size={14} />
-              </a>
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:shrink-0">
+                <a
+                  href="https://forms.gle/iFGqZbxfguSMFEPx6"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 bg-slate-900 text-white text-xs font-black uppercase tracking-wider px-4 py-2.5 rounded-lg hover:bg-slate-800 transition"
+                >
+                  Register Now <ExternalLink size={14} />
+                </a>
+                <a
+                  href="/TGAFM%205K%20RUN%20FLYER.pdf"
+                  download
+                  className="inline-flex items-center justify-center gap-2 bg-white text-slate-900 text-xs font-black uppercase tracking-wider px-4 py-2.5 rounded-lg border border-slate-300 hover:bg-slate-50 transition"
+                >
+                  Download Flyer <Download size={14} />
+                </a>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
     </nav>
 
@@ -3012,59 +3005,15 @@ const App = () => {
 
           <div className="max-w-6xl mx-auto py-10 animate-in slide-in-from-bottom-5">
 
-             <div className="bg-blue-900 rounded-[3rem] p-12 text-white mb-12 relative overflow-hidden shadow-2xl">
-
-                <Landmark size={300} className="absolute -bottom-20 -right-20 opacity-10" />
-
-                <div className="relative z-10">
-
-                   <span className="bg-red-600 px-4 py-1 rounded-full text-[10px] font-black tracking-widest uppercase mb-6 inline-block">2nd Annual State Conference</span>
-
-                   <h2 className="text-5xl font-black tracking-tighter mb-4 leading-tight uppercase">TGAFMCON - 2026</h2>
-
-                   <p className="text-xl font-bold text-blue-200 mb-8 italic">Theme: Holistic Forensics - Bridging Crime, Clinic & Court</p>
-
-                </div>
-
-             </div>
-
              <div className="bg-white p-12 rounded-[3rem] border text-center shadow-sm">
 
-                <QrCode size={40} className="text-red-600 mx-auto mb-6"/>
+                <Bell size={40} className="text-blue-900 mx-auto mb-6"/>
 
-                <h4 className="text-2xl font-black text-blue-900 uppercase mb-4">TGAFMCON 2026 Registration</h4>
+                <h4 className="text-2xl font-black text-blue-900 uppercase mb-4">Conference Updates</h4>
 
-                <p className="text-slate-500 font-medium mb-10 max-w-2xl mx-auto leading-relaxed">
-
-                   Registration, early bird discounts, and scientific programme details are active. 
-
-                   Block your dates: 11th & 12th April, 2026.
-
+                <p className="text-slate-600 font-semibold max-w-2xl mx-auto leading-relaxed">
+                  We will update shortly. Stay tuned.
                 </p>
-
-                <div className="flex flex-col items-center gap-6">
-
-                  <div className="flex flex-wrap justify-center gap-4">
-
-                    <a href={CONFERENCE_FORM_LINK} target="_blank" rel="noreferrer" className="bg-blue-900 text-white px-12 py-5 rounded-[2.5rem] font-black uppercase tracking-widest text-[10px] shadow-2xl hover:bg-red-600 transition-all hover:scale-105 flex items-center justify-center gap-3">
-
-                      <QrCode size={18}/> Online Registration Form
-
-                    </a>
-
-                    <button onClick={() => setActiveTab('academy-registration')} className="bg-white border-2 border-slate-200 text-blue-900 px-12 py-5 rounded-[2.5rem] font-black uppercase tracking-widest text-[10px] hover:bg-slate-50 transition-all hover:scale-105">
-
-                      Member Registration
-
-                    </button>
-
-                  </div>
-
-                  <a href="/tgafmcon-2026-brochure.pdf" download="TGAFMCON_2026_Brochure.pdf" className="bg-red-600 text-white px-16 py-4 rounded-[2.5rem] font-black uppercase tracking-widest text-[11px] shadow-lg hover:bg-red-700 transition-all hover:scale-105 flex items-center justify-center gap-3 border-4 border-red-100 animate-pulse mt-2">
-                    <FileText size={20}/> Download Official 2026 Brochure
-                  </a>
-
-                </div>
 
              </div>
 
