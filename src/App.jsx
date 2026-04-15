@@ -162,20 +162,23 @@ const OBJECTIVES = [
 
 const CME_ACTIVITIES = [
 
-    { year: "2026", title: "TGAFMCON-2026: HOLISTIC FORENSICS: BRIDGING CRIME, CLINIC & COURT", host: "Gandhi Medical College", place: "Hyderabad", date: "11th & 12th April" },
+  { year: "2026", title: "TGAFMCON-2026: Holistic Forensics - Bridging Crime, Clinic & Court", host: "Gandhi Medical College", place: "Secunderabad", date: "11th & 12th April 2026" },
 
-  { year: "2025", title: "TGAFMCON-2025: Standard Medicolegal Practices", host: "Kakatiya Medical College", place: "Warangal", date: "11th & 12th July" },
+  { year: "2025", title: "TGAFMCON-2025: Standard Medicolegal Practices (Practical & Precise)", host: "Kakatiya Medical College", place: "Warangal", date: "11th & 12th July 2025" },
 
+  { year: "2025", title: "CPD-2025: Empowering Forensic Practice with Updated Protocols & Standards", host: "Government Medical College", place: "Siddipet", date: "20th December 2025" },
 
-  { year: "2024", title: "Insights into the Criminal Intent", host: "KAMSRC", place: "Hyderabad", date: "27th January" },
+  { year: "2024", title: "Insights Into The Criminal Intent", host: "KAMSRC", place: "L.B Nagar, Hyderabad", date: "27th January 2024" },
 
-  { year: "2023", title: "Contemporary Medico-Legal Issues", host: "Surabhi Institute", place: "Siddipet", date: "30th September" },
+  { year: "2023", title: "Contemporary Medico-Legal Issues and Forensic Practice", host: "Surabhi Institute of Medical Sciences", place: "Siddipet", date: "30th September 2023" },
 
-  { year: "2023", title: "Interface with Allied Specialties", host: "Apollo Medical College", place: "Hyderabad", date: "12th May" },
+  { year: "2023", title: "Interface of Forensic Medicine with Allied Specialties (National Forensic Day)", host: "Apollo Medical College", place: "Hyderabad", date: "12th May 2023" },
 
-  { year: "2022", title: "Forensic Radiology", host: "AIIMS, Bibinagar", place: "Bibinagar", date: "18th July" },
+  { year: "2022", title: "Forensic Radiology", host: "AIIMS, Bibinagar", place: "Bibinagar", date: "18th July 2022" },
 
-  { year: "2021", title: "Modern Tools in Identification", host: "Kakatiya Medical College", place: "Warangal", date: "18th December" },
+  { year: "2022", title: "Providing Solutions to Practical Challenges of Medico-Legal Professionals", host: "Osmania Medical College", place: "Hyderabad", date: "26th March 2022" },
+
+  { year: "2021", title: "Application of Modern Tools in Identification of Deceased and Establishment of Cause of Death", host: "Kakatiya Medical College", place: "Warangal", date: "18th December 2021" },
 
 ];
 
