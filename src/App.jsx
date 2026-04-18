@@ -582,7 +582,7 @@ const App = () => {
       category: 'Case Reports',
       title: 'Intimate Partner Homicide by Rifle Gunshot Injury to Head - A Case Report',
       authors: 'Details to be updated',
-      pdfUrl: '/journals/Intimate Partner Homicide by Rifle Gunshot Injury to Head - A Case Report.pdf'
+      pdfUrl: '/journals/Intimate Partner Homicide by Rifle Gunshot Injury to Head - a case report.pdf'
     },
     {
       key: 'Smothering with Cervical Fracture Simulating Natural Death - A Case Report',
