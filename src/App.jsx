@@ -199,11 +199,152 @@ const JOURNAL_TAB_KEYS = [
   'instr-authors'
 ];
 
+// Path to Tab mapping for router
+const PATH_TO_TAB = {
+  '/': 'home',
+  '/about': 'academy-about',
+  '/executive-body': 'academy-present',
+  '/past-body-2014-2024': 'academy-past-1',
+  '/past-body-2024-2026': 'academy-past-2',
+  '/aims-scope': 'aims-scope',
+  '/editorial-board': 'editorial-board',
+  '/editorial-process': 'policy-editorial-process',
+  '/instr-editors': 'instr-editors',
+  '/instr-reviewers': 'instr-reviewers',
+  '/instr-authors': 'instr-authors',
+  '/journal': 'journal',
+  '/journal/article': 'journal-article',
+  '/open-access': 'policy-open-access',
+  '/copyright': 'policy-copyright',
+  '/publication-ethics': 'policy-publication-ethics',
+  '/author-charges': 'policy-author-charges',
+  '/publisher-info': 'publisher-info',
+  '/members': 'academy-members',
+  '/register': 'academy-registration',
+  '/conference': 'conference',
+  '/academic-activities': 'academic-activities',
+  '/announcements': 'academy-notices',
+  '/sitemap': 'sitemap',
+  '/admin': 'admin'
+};
+
+// Reverse mapping
+const TAB_TO_PATH = Object.fromEntries(
+  Object.entries(PATH_TO_TAB).map(([path, tab]) => [tab, path])
+);
+
+// Page metadata for SEO
+const PAGE_METADATA = {
+  home: {
+    title: 'AJFM - Academy Journal of Forensic Medicine | TGAFM',
+    description: 'Official journal and portal of Telangana Academy of Forensic Medicine. Publish research in forensic medicine, medico-legal studies, and pathology.'
+  },
+  'academy-about': {
+    title: 'About TGAFM - Telangana Academy of Forensic Medicine',
+    description: 'Learn about TGAFM, a professional organization dedicated to advancing forensic medicine and medico-legal practices in India.'
+  },
+  'academy-present': {
+    title: 'Present Executive Body - TGAFM',
+    description: 'Meet the current leadership and executive members of Telangana Academy of Forensic Medicine (2025-2027).'
+  },
+  'academy-past-1': {
+    title: 'Past Executive Body (2014-2024) - TGAFM',
+    description: 'Previous leadership of Telangana Academy of Forensic Medicine (2014-2024 term).'
+  },
+  'academy-past-2': {
+    title: 'Past Executive Body (2024-2026) - TGAFM',
+    description: 'Previous leadership of Telangana Academy of Forensic Medicine (2024-2026 term).'
+  },
+  'aims-scope': {
+    title: 'Aims & Scope - AJFM Journal',
+    description: 'Aims, scope, and publication types for Academy Journal of Forensic Medicine.'
+  },
+  'editorial-board': {
+    title: 'Editorial Board - AJFM',
+    description: 'Meet the editorial board members of Academy Journal of Forensic Medicine.'
+  },
+  'policy-editorial-process': {
+    title: 'Editorial Process & Peer Review - AJFM',
+    description: 'Learn about the peer review and editorial process for AJFM submissions.'
+  },
+  'instr-editors': {
+    title: 'Instructions for Editors - AJFM',
+    description: 'Guidelines and instructions for editors handling submissions to AJFM.'
+  },
+  'instr-reviewers': {
+    title: 'Instructions for Reviewers - AJFM',
+    description: 'Peer review guidelines and instructions for AJFM manuscript reviewers.'
+  },
+  'instr-authors': {
+    title: 'Instructions for Authors - AJFM',
+    description: 'Complete guidelines for submitting manuscripts to Academy Journal of Forensic Medicine.'
+  },
+  journal: {
+    title: 'Publications - AJFM Journal Archives',
+    description: 'Browse and access published articles from Academy Journal of Forensic Medicine (2025-2026).'
+  },
+  'journal-article': {
+    title: 'Article Details - AJFM',
+    description: 'View full article details, abstract, authors, and DOI information.'
+  },
+  'policy-open-access': {
+    title: 'Open Access Policy - AJFM',
+    description: 'Open access policy and guidelines for AJFM publications.'
+  },
+  'policy-copyright': {
+    title: 'Copyright Policy - AJFM',
+    description: 'Copyright and intellectual property policy for AJFM.'
+  },
+  'policy-publication-ethics': {
+    title: 'Publication Ethics - AJFM',
+    description: 'Publication ethics standards and author responsibilities for AJFM.'
+  },
+  'policy-author-charges': {
+    title: 'Publication Charges - AJFM',
+    description: 'Author charges, fees, and publication cost information for AJFM.'
+  },
+  'publisher-info': {
+    title: 'Publisher Information - AJFM',
+    description: 'Publisher and organization information for Academy Journal of Forensic Medicine.'
+  },
+  'academy-members': {
+    title: 'Life Members - TGAFM',
+    description: 'List of life members of Telangana Academy of Forensic Medicine.'
+  },
+  'academy-registration': {
+    title: 'Membership Registration - TGAFM',
+    description: 'Register as a member of Telangana Academy of Forensic Medicine.'
+  },
+  conference: {
+    title: 'Conferences - TGAFM',
+    description: 'Upcoming and past conferences organized by Telangana Academy of Forensic Medicine.'
+  },
+  'academic-activities': {
+    title: 'Academic Activities - TGAFM',
+    description: 'CME programs, workshops, and academic activities organized by TGAFM.'
+  },
+  'academy-notices': {
+    title: 'Announcements - TGAFM',
+    description: 'Latest announcements and notices from Telangana Academy of Forensic Medicine.'
+  },
+  sitemap: {
+    title: 'Site Map - TGAFM Portal',
+    description: 'Complete site map and navigation for TGAFM website.'
+  }
+};
+
+
 
 
 const App = () => {
 
   const [activeTab, setActiveTab] = useState('home');
+
+  // Navigation function for click handlers
+  const navigateToTab = (tab) => {
+    setActiveTab(tab);
+    setIsMenuOpen(false); // Close mobile menu on navigation
+  };
 
   const [isAcademyOpen, setIsAcademyOpen] = useState(false);
 
@@ -298,29 +439,61 @@ const App = () => {
   }, [fetchData]);
 
   useEffect(() => {
-    const syncFromUrl = () => {
-      const params = new URLSearchParams(window.location.search);
-      const tabFromUrl = params.get('tab') || '';
-      const articleId = params.get('article') || '';
+    // Sync URL to match activeTab using history pushState
+    const path = TAB_TO_PATH[activeTab] || '/';
+    const params = new URLSearchParams();
+    
+    // Add article ID if viewing article details
+    if (activeTab === 'journal-article' && selectedArticleId) {
+      params.set('id', selectedArticleId);
+    }
+    
+    const newUrl = params.toString() ? `${path}?${params.toString()}` : path;
+    window.history.replaceState({}, '', newUrl);
+  }, [activeTab, selectedArticleId]);
 
-      if (tabFromUrl && JOURNAL_TAB_KEYS.includes(tabFromUrl)) {
-        setActiveTab(tabFromUrl);
-      }
+  // Sync activeTab from URL on load
+  useEffect(() => {
+    const path = window.location.pathname;
+    const tab = PATH_TO_TAB[path] || 'home';
+    setActiveTab(tab);
 
-      if (articleId) {
-        setSelectedArticleId(articleId);
-        setActiveTab('journal-article');
-      }
-    };
-
-    syncFromUrl();
-    window.addEventListener('popstate', syncFromUrl);
-
-    return () => window.removeEventListener('popstate', syncFromUrl);
+    // Check for article ID in query params
+    const params = new URLSearchParams(window.location.search);
+    const articleId = params.get('id');
+    if (articleId && tab === 'journal-article') {
+      setSelectedArticleId(articleId);
+    }
   }, []);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [activeTab]);
+
+  // Update document title and meta description based on active tab
+  useEffect(() => {
+    const metadata = PAGE_METADATA[activeTab] || PAGE_METADATA.home;
+    document.title = metadata.title;
+    
+    // Update or create meta description tag
+    let metaDesc = document.querySelector('meta[name="description"]');
+    if (!metaDesc) {
+      metaDesc = document.createElement('meta');
+      metaDesc.name = 'description';
+      document.head.appendChild(metaDesc);
+    }
+    metaDesc.content = metadata.description;
+
+    // Update canonical URL
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.rel = 'canonical';
+      document.head.appendChild(canonical);
+    }
+    const path = TAB_TO_PATH[activeTab] || '/';
+    const baseUrl = window.location.origin;
+    canonical.href = `${baseUrl}${path}`;
   }, [activeTab]);
 
   useEffect(() => {
@@ -500,26 +673,15 @@ const App = () => {
   };
 
   const openJournalArchive = () => {
-    setActiveTab('journal');
     setSelectedArticleId('');
     setSelectedJournalIssue('issue-1');
-
-    const url = new URL(window.location.href);
-    url.searchParams.set('tab', 'journal');
-    url.searchParams.delete('article');
-    window.history.pushState({}, '', `${url.pathname}?${url.searchParams.toString()}`);
+    setActiveTab('journal');
   };
 
   const openArticleDetails = (article) => {
     if (!article?._id) return;
-
     setSelectedArticleId(article._id);
     setActiveTab('journal-article');
-
-    const url = new URL(window.location.href);
-    url.searchParams.set('tab', 'journal-article');
-    url.searchParams.set('article', article._id);
-    window.history.pushState({}, '', `${url.pathname}?${url.searchParams.toString()}`);
   };
 
   const normalizeJournalTitle = (value = '') => value.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -677,7 +839,7 @@ const App = () => {
     <nav className="bg-white sticky top-0 z-50 shadow-sm font-sans text-slate-900 border-b border-slate-200">
 
       <div className="bg-gradient-to-r from-blue-950 via-blue-900 to-red-800 text-white">
-        <div className="max-w-7xl mx-auto px-4 py-3 cursor-pointer" onClick={() => setActiveTab('home')}>
+        <div className="max-w-7xl mx-auto px-4 py-3 cursor-pointer" onClick={() => navigateToTab('home')}>
           <div className="max-w-5xl mx-auto w-full rounded-2xl border border-white/20 bg-white/5 shadow-xl px-5 md:px-10 py-4 md:py-5 flex items-center justify-center gap-5 md:gap-8">
             <div className="w-16 h-16 md:w-24 md:h-24 bg-white rounded-xl flex items-center justify-center border border-white/30 p-1.5 shadow-sm overflow-hidden shrink-0">
               <img src="/logo.png" alt="TGAFM" className="w-full h-full object-contain" onError={(e) => { e.target.src = 'https://via.placeholder.com/100?text=Logo'; }} />
@@ -705,22 +867,22 @@ const App = () => {
       <div className="bg-white">
         <div className="max-w-7xl mx-auto px-4 flex justify-between h-16 items-center gap-3">
           <div className="hidden lg:flex space-x-1 items-center">
-          <button onClick={() => setActiveTab('home')} className="px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all hover:text-blue-900 text-slate-600 bg-transparent border-none shadow-none">Home</button>
+          <button onClick={() => navigateToTab('home')} className="px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all hover:text-blue-900 text-slate-600 bg-transparent border-none shadow-none">Home</button>
 
           <div className="group relative z-40">
             <button className="px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all hover:text-blue-900 text-slate-600 flex items-center gap-1 bg-transparent border-none shadow-none">
               About us <ChevronDown size={14} className="group-hover:rotate-180 transition-transform"/>
             </button>
             <div className="absolute top-full left-0 w-56 bg-white border border-slate-100 rounded-2xl shadow-xl py-3 hidden group-hover:block transition-opacity opacity-100">
-              <button onClick={() => setActiveTab('academy-about')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">About TGAFM</button>
-              <button onClick={() => setActiveTab('academy-present')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">Present Executive Body</button>
+              <button onClick={() => navigateToTab('academy-about')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">About TGAFM</button>
+              <button onClick={() => navigateToTab('academy-present')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">Present Executive Body</button>
               <div className="group/past relative w-full">
                 <button className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 flex items-center justify-between border-none shadow-none bg-transparent">
                   Past Executive Body <ChevronRight size={14} />
                 </button>
                 <div className="absolute top-0 left-full w-48 bg-white border border-slate-100 rounded-2xl shadow-xl py-3 hidden group-hover/past:block">
-                  <button onClick={() => setActiveTab('academy-past-1')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">2014 - 2024</button>
-                  <button onClick={() => setActiveTab('academy-past-2')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">2024 - 2026</button>
+                  <button onClick={() => navigateToTab('academy-past-1')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">2014 - 2024</button>
+                  <button onClick={() => navigateToTab('academy-past-2')} className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-neutral-50 hover:text-blue-900 block border-none shadow-none bg-transparent">2024 - 2026</button>
                 </div>
               </div>
             </div>

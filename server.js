@@ -49,6 +49,22 @@ const JOURNAL_SITEMAP_TABS = [
   'publisher-info'
 ];
 
+// Map tab names to clean URL paths (matching frontend PATH_TO_TAB)
+const TAB_TO_PATH = {
+  'journal': '/journal',
+  'aims-scope': '/aims-scope',
+  'editorial-board': '/editorial-board',
+  'policy-editorial-process': '/editorial-process',
+  'instr-editors': '/instr-editors',
+  'instr-reviewers': '/instr-reviewers',
+  'instr-authors': '/instr-authors',
+  'policy-open-access': '/open-access',
+  'policy-copyright': '/copyright',
+  'policy-publication-ethics': '/publication-ethics',
+  'policy-author-charges': '/author-charges',
+  'publisher-info': '/publisher-info'
+};
+
 if (!fs.existsSync(JOURNAL_DIR)) {
   fs.mkdirSync(JOURNAL_DIR, { recursive: true });
 }
@@ -171,13 +187,13 @@ app.get('/sitemap.xml', async (_req, res) => {
     ];
 
     const journalSectionEntries = JOURNAL_SITEMAP_TABS.map((tab) => ({
-      loc: `${PUBLIC_SITE_URL}/?tab=${encodeURIComponent(tab)}`,
+      loc: `${PUBLIC_SITE_URL}${TAB_TO_PATH[tab] || '/'}`,
       changefreq: 'weekly',
       priority: tab === 'journal' ? '0.9' : '0.7'
     }));
 
     const articleEntries = articles.map((article) => ({
-      loc: `${PUBLIC_SITE_URL}/?tab=journal-article&article=${encodeURIComponent(String(article._id))}`,
+      loc: `${PUBLIC_SITE_URL}/journal/article?id=${encodeURIComponent(String(article._id))}`,
       changefreq: 'weekly',
       priority: '0.8'
     }));
