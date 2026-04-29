@@ -692,35 +692,50 @@ const App = () => {
       category: 'Editorial',
       title: 'Lead Exposure in Childhood: A Review of Risks, Consequences, and Interventions',
       authors: 'Prashanth Mada and Radhika Soanker',
-      page: '02'
+      page: '02',
+      doi: 'https://doi.org/10.66644/AJFM.20250101',
+      abstract: 'This review outlines environmental and household sources of lead exposure in children, summarizes major neurodevelopmental and systemic outcomes, and highlights practical prevention and public-health interventions.',
+      keywords: ['Lead poisoning', 'Child health', 'Environmental exposure', 'Neurodevelopment', 'Prevention']
     },
     {
       key: 'Awareness of Registered Medical Practitioners on Certification of Sexual Potency',
       category: 'Original Article',
       title: 'Awareness of registered medical practitioners on certification of sexual potency - a questionnaire-based study',
       authors: 'Surendar Reddy G',
-      page: '05'
+      page: '05',
+      doi: 'https://doi.org/10.66644/AJFM.20250102',
+      abstract: 'A questionnaire-based study assessing awareness, legal understanding, and certification practices among registered medical practitioners in sexual potency evaluations.',
+      keywords: ['Sexual potency', 'Questionnaire study', 'Medicolegal certification', 'Clinical awareness', 'Medical practitioners']
     },
     {
       key: 'An Unusual Manner of Death in a Case of Electrocution',
       category: 'Case Reports',
       title: 'An unusual manner of death in a case of electrocution: an autopsy case report',
       authors: 'Suraj Sundaragiri, Rudra Vijay, Chaitanya Mittal',
-      page: '10'
+      page: '10',
+      doi: 'https://doi.org/10.66644/AJFM.20250103',
+      abstract: 'This case report discusses an atypical electrocution death, emphasizing scene findings, autopsy correlation, and forensic interpretation of injury patterns.',
+      keywords: ['Electrocution', 'Autopsy', 'Forensic pathology', 'Cause of death', 'Case report']
     },
     {
       key: 'Unknown Dead Neonate',
       category: 'Case Reports',
       title: 'Unknown Dead Neonate - Maternal Neonaticide? A Case Report',
       authors: 'Mary Sowjanya G, Surender Reddy',
-      page: '13'
+      page: '13',
+      doi: 'https://doi.org/10.66644/AJFM.20250104',
+      abstract: 'A medicolegal analysis of an unidentified dead neonate with discussion on differential considerations, evidence evaluation, and the possibility of maternal neonaticide.',
+      keywords: ['Neonate death', 'Neonaticide', 'Medicolegal investigation', 'Forensic evidence', 'Case report']
     },
     {
       key: 'Complex Suicide',
       category: 'Case Reports',
       title: 'Complex-suicide - A case report.',
       authors: 'Varun Kumar R and Taqiuddin Khan M',
-      page: '17'
+      page: '17',
+      doi: 'https://doi.org/10.66644/AJFM.20250105',
+      abstract: 'This report presents a complex-suicide scenario and reviews forensic indicators used to distinguish self-inflicted injury patterns from homicidal possibilities.',
+      keywords: ['Complex suicide', 'Forensic investigation', 'Injury pattern', 'Manner of death', 'Case report']
     }
   ];
 
@@ -730,35 +745,50 @@ const App = () => {
       category: 'EDITORIAL',
       title: 'Artificial Intelligence in Forensic Medicine and Toxicology',
       authors: 'Details to be updated',
-      pdfUrl: '/journals/Artificial Intelligence in Forensic Medicine and Toxicology.pdf'
+      pdfUrl: '/journals/Artificial Intelligence in Forensic Medicine and Toxicology.pdf',
+      doi: 'https://doi.org/10.66644/AJFM/20250201',
+      abstract: 'This editorial explores practical applications of artificial intelligence in forensic medicine and toxicology, including pattern recognition, workflow optimization, and decision support in medicolegal practice.',
+      keywords: ['Artificial intelligence', 'Forensic medicine', 'Forensic toxicology', 'Decision support', 'Digital forensics']
     },
     {
       key: 'Recent Advances In Forensic Anthropology - A Systematic Analysis',
       category: 'ORIGINAL ARTICLE',
       title: 'Recent Advances In Forensic Anthropology - A Systematic Analysis',
       authors: 'Details to be updated',
-      pdfUrl: '/journals/Recent Advances In Forensic Anthropology - A Systematic Analysis .pdf'
+      pdfUrl: '/journals/Recent Advances In Forensic Anthropology - A Systematic Analysis .pdf',
+      doi: 'https://doi.org/10.66644/AJFM/20250202',
+      abstract: 'A systematic analysis summarizing contemporary advances in forensic anthropology, with focus on identification methods, skeletal analysis, and multidisciplinary integration.',
+      keywords: ['Forensic anthropology', 'Systematic analysis', 'Human identification', 'Skeletal analysis', 'Forensic science']
     },
     {
       key: 'Intimate Partner Homicide by Rifle Gunshot Injury to Head - A Case Report',
       category: 'Case Reports',
       title: 'Intimate Partner Homicide by Rifle Gunshot Injury to Head - A Case Report',
       authors: 'Details to be updated',
-      pdfUrl: '/journals/Intimate Partner Homicide by Rifle Gunshot Injury to Head - a case report.pdf'
+      pdfUrl: '/journals/Intimate Partner Homicide by Rifle Gunshot Injury to Head - a case report.pdf',
+      doi: 'https://doi.org/10.66644/AJFM/20250203',
+      abstract: 'This case report details intimate partner homicide involving a rifle gunshot injury to the head, highlighting investigative findings, wound interpretation, and medicolegal significance.',
+      keywords: ['Intimate partner homicide', 'Rifle gunshot', 'Head injury', 'Medicolegal autopsy', 'Case report']
     },
     {
       key: 'Smothering with Cervical Fracture Simulating Natural Death - A Case Report',
       category: 'Case Reports',
       title: 'Smothering with Cervical Fracture Simulating Natural Death - A Case Report',
       authors: 'Details to be updated',
-      pdfUrl: '/journals/Smothering with Cervical Fracture Simulating Natural Death - A Case Report.pdf'
+      pdfUrl: '/journals/Smothering with Cervical Fracture Simulating Natural Death - A Case Report.pdf',
+      doi: 'https://doi.org/10.66644/AJFM/20250204',
+      abstract: 'A deceptive smothering death with associated cervical fracture is presented, demonstrating how careful forensic examination can differentiate homicidal asphyxia from apparent natural death.',
+      keywords: ['Smothering', 'Cervical fracture', 'Asphyxial death', 'Forensic pathology', 'Case report']
     },
     {
       key: 'Accidental Familial Electrocution In A Wet Agricultural Field - A Case Report',
       category: 'Case Reports',
       title: 'Accidental Familial Electrocution In A Wet Agricultural Field - A Case Report',
       authors: 'Details to be updated',
-      pdfUrl: '/journals/Accidental Familial Electrocution In A Wet Agricultural Field - A Case Report.pdf'
+      pdfUrl: '/journals/Accidental Familial Electrocution In A Wet Agricultural Field - A Case Report.pdf',
+      doi: 'https://doi.org/10.66644/AJFM/20250205',
+      abstract: 'This report examines a familial accidental electrocution in a wet agricultural setting, focusing on scene reconstruction, electrical hazards, and preventive safety implications.',
+      keywords: ['Accidental electrocution', 'Agricultural field', 'Family fatalities', 'Scene reconstruction', 'Case report']
     }
   ];
 
@@ -778,8 +808,9 @@ const App = () => {
     title: layout.title,
     authors: layout.authors || 'Details to be updated',
     affiliations: '',
-    abstract: '',
-    doi: '',
+    abstract: layout.abstract || '',
+    keywords: Array.isArray(layout.keywords) ? layout.keywords : [],
+    doi: layout.doi || '',
     articleType: layout.category,
     pdfUrl: layout.pdfUrl,
     issueLayout: layout
@@ -804,17 +835,49 @@ const App = () => {
     return matchedLayout?.authors || (Array.isArray(article.authors) ? article.authors.join(', ') : article.authors || '');
   };
 
+  const withLayoutMetadata = (article, layout) => {
+    const hasKeywords = Array.isArray(article.keywords)
+      ? article.keywords.length > 0
+      : Boolean(String(article.keywords || '').trim());
+    const currentAbstract = String(article.abstract || '').trim();
+    const hasUsableAbstract =
+      currentAbstract &&
+      currentAbstract.toLowerCase() !== 'full abstract to be updated from manuscript.';
+
+    return {
+      ...article,
+      issueLayout: layout,
+      abstract: layout.abstract || (hasUsableAbstract ? currentAbstract : ''),
+      keywords: Array.isArray(layout.keywords) && layout.keywords.length > 0
+        ? layout.keywords
+        : (hasKeywords ? article.keywords : []),
+      doi: layout.doi || String(article.doi || '').trim() || '',
+      pdfUrl: article.pdfUrl || layout.pdfUrl
+    };
+  };
+
   const issueOneArticles = ISSUE_ONE_LAYOUT.map((layout) => {
     const matchedArticle = findArticleByMatchKey(layout.key);
-    return matchedArticle ? { ...matchedArticle, issueLayout: layout } : null;
+    return matchedArticle ? withLayoutMetadata(matchedArticle, layout) : null;
   }).filter(Boolean);
 
   const issueTwoArticles = ISSUE_TWO_LAYOUT.map((layout, index) => {
     const matchedArticle = findArticleByMatchKey(layout.key);
     return matchedArticle
-      ? { ...matchedArticle, issueLayout: layout, pdfUrl: matchedArticle.pdfUrl || layout.pdfUrl }
+      ? withLayoutMetadata(matchedArticle, layout)
       : buildStaticIssueArticle(layout, 'issue-2', index);
   });
+
+  const getArticleKeywords = (article) => {
+    if (!article) return [];
+    if (Array.isArray(article.keywords)) {
+      return article.keywords.map((k) => String(k).trim()).filter(Boolean);
+    }
+    return String(article.keywords || '')
+      .split(',')
+      .map((k) => k.trim())
+      .filter(Boolean);
+  };
 
   const allJournalArticles = [...issueOneArticles, ...issueTwoArticles];
   const displayedIssueArticles = selectedJournalIssue === 'issue-1' ? issueOneArticles : issueTwoArticles;
@@ -1994,10 +2057,10 @@ const App = () => {
                          </p>
                        </div>
                      )}
-                     {art.abstract && String(art.abstract).trim().toLowerCase() !== 'full abstract to be updated from manuscript.' && (
+                     {getArticleKeywords(art).length > 0 && (
                        <div className="mb-6">
-                         <p className="text-xs font-semibold text-slate-700 mb-1">Abstract:</p>
-                         <p className="text-xs text-slate-600 line-clamp-3 hover:line-clamp-none transition-all">{art.abstract}</p>
+                         <p className="text-xs font-semibold text-slate-700 mb-1">Keywords:</p>
+                         <p className="text-xs text-slate-600">{getArticleKeywords(art).join(', ')}</p>
                        </div>
                      )}
                      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 text-[10px] font-black text-blue-900 uppercase tracking-[0.2em] border-t pt-8 mt-4">
@@ -2086,6 +2149,29 @@ const App = () => {
                 </header>
 
                 <section className="flex flex-wrap gap-3 pt-2">
+
+                  <div className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-6 mb-2 space-y-4">
+                    {selectedArticle.doi && (
+                      <p className="text-sm text-slate-700">
+                        <span className="font-semibold text-slate-900">DOI:</span>{' '}
+                        <a
+                          href={selectedArticle.doi}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-700 hover:underline break-all"
+                        >
+                          {selectedArticle.doi}
+                        </a>
+                      </p>
+                    )}
+
+                    {getArticleKeywords(selectedArticle).length > 0 && (
+                      <p className="text-sm text-slate-700">
+                        <span className="font-semibold text-slate-900">Keywords:</span>{' '}
+                        {getArticleKeywords(selectedArticle).join(', ')}
+                      </p>
+                    )}
+                  </div>
 
                   {resolvePdfUrl(selectedArticle.pdfUrl) ? (
 
