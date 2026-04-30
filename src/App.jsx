@@ -233,6 +233,18 @@ const TAB_TO_PATH = Object.fromEntries(
   Object.entries(PATH_TO_TAB).map(([path, tab]) => [tab, path])
 );
 
+const getInitialTabFromLocation = () => {
+  if (typeof window === 'undefined') return 'home';
+  const path = window.location.pathname;
+  return PATH_TO_TAB[path] || 'home';
+};
+
+const getInitialArticleIdFromLocation = () => {
+  if (typeof window === 'undefined') return '';
+  const params = new URLSearchParams(window.location.search);
+  return params.get('id') || '';
+};
+
 // Page metadata for SEO
 const PAGE_METADATA = {
   home: {
@@ -338,7 +350,7 @@ const PAGE_METADATA = {
 
 const App = () => {
 
-  const [activeTab, setActiveTab] = useState('home');
+  const [activeTab, setActiveTab] = useState(getInitialTabFromLocation);
 
   // Navigation function for click handlers
   const navigateToTab = (tab) => {
@@ -373,7 +385,7 @@ const App = () => {
   const [isFlyerLoading, setIsFlyerLoading] = useState(false);
 
   const [journalFile, setJournalFile] = useState(null);
-  const [selectedArticleId, setSelectedArticleId] = useState('');
+  const [selectedArticleId, setSelectedArticleId] = useState(getInitialArticleIdFromLocation);
   const [selectedJournalIssue, setSelectedJournalIssue] = useState('issue-1');
 
   const [journalForm, setJournalForm] = useState({
@@ -2063,6 +2075,12 @@ const App = () => {
                          <p className="text-xs text-slate-600">{getArticleKeywords(art).join(', ')}</p>
                        </div>
                      )}
+                     {String(art.abstract || '').trim() && (
+                       <div className="mb-6">
+                         <p className="text-xs font-semibold text-slate-700 mb-1">Abstract:</p>
+                         <p className="text-xs text-slate-600 leading-relaxed text-justify">{String(art.abstract).trim()}</p>
+                       </div>
+                     )}
                      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 text-[10px] font-black text-blue-900 uppercase tracking-[0.2em] border-t pt-8 mt-4">
                        <span className="text-slate-300">ISSN (Print): 3107-7633</span>
 
@@ -2170,6 +2188,15 @@ const App = () => {
                         <span className="font-semibold text-slate-900">Keywords:</span>{' '}
                         {getArticleKeywords(selectedArticle).join(', ')}
                       </p>
+                    )}
+
+                    {String(selectedArticle.abstract || '').trim() && (
+                      <div className="pt-2">
+                        <p className="text-sm font-semibold text-slate-900 mb-2">Abstract:</p>
+                        <p className="text-sm text-slate-700 leading-relaxed text-justify">
+                          {String(selectedArticle.abstract).trim()}
+                        </p>
+                      </div>
                     )}
                   </div>
 
