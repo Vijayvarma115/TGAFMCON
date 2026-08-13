@@ -1577,7 +1577,7 @@ const App = () => {
 
                    <div className="mb-12">
 
-                      <h3 className="text-8xl font-black text-blue-900 leading-none mb-4">253</h3>
+                      <h3 className="text-8xl font-black text-blue-900 leading-none mb-4">263</h3>
 
                       <p className="text-lg font-bold text-slate-500 uppercase tracking-widest">Registered Life Members</p>
 
@@ -1591,7 +1591,7 @@ const App = () => {
 
                    <p className="text-slate-500 text-sm leading-relaxed mb-12 max-w-md mx-auto font-medium">
 
-                      The complete directory of all 253 life members is available for download as an official PDF list.
+                      The complete directory of all 263 life members is available for download as an official PDF list.
 
                    </p>
 
@@ -1751,7 +1751,7 @@ const App = () => {
 
              <div className="flex flex-col md:flex-row items-center gap-10 mb-20">
 
-                <div className="md:w-2/3"><span className="text-red-600 font-black text-[10px] uppercase tracking-[0.4em] mb-4 block">Institutional Profile</span><h2 className="text-4xl font-black text-blue-900 tracking-tighter uppercase mb-6 leading-tight">About TGAFM</h2><p className="text-slate-600 leading-relaxed font-medium mb-8 text-justify">The Telangana Academy of Forensic Medicine (TGAFM) is a professional organization dedicated to the advancement of Forensic Medicine. Officially registered on <strong>5th June 2014</strong> under the Andhra Pradesh Societies Registration Act, 2001. Today, 253 members have become life members, serving as a platform for excellence.</p></div>
+                <div className="md:w-2/3"><span className="text-red-600 font-black text-[10px] uppercase tracking-[0.4em] mb-4 block">Institutional Profile</span><h2 className="text-4xl font-black text-blue-900 tracking-tighter uppercase mb-6 leading-tight">About TGAFM</h2><p className="text-slate-600 leading-relaxed font-medium mb-8 text-justify">The Telangana Academy of Forensic Medicine (TGAFM) is a professional organization dedicated to the advancement of Forensic Medicine. Officially registered on <strong>5th June 2014</strong> under the Andhra Pradesh Societies Registration Act, 2001. Today, 263 members have become life members, serving as a platform for excellence.</p></div>
 
                 <div className="md:w-1/3 p-8 bg-white rounded-[4rem] border shadow-2xl flex items-center justify-center"><img src="/logo.png" alt="TGAFM" className="w-full h-full object-contain" /></div>
 
